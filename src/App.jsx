@@ -53,20 +53,11 @@ const App = () => {
               width: isMobile ? '40px' : '55px',
               height: 'auto',
               borderRadius: '8px',
-              objectFit: 'contain'
+              objectFit: 'contain',
+              mixBlendMode: 'multiply'
             }} 
           />
-          <div style={{ textAlign: 'left' }}>
-            <h2 style={{ 
-              color: '#B35A33', 
-              fontSize: isMobile ? '1rem' : '1.3rem', 
-              margin: 0, 
-              fontWeight: 900,
-              letterSpacing: '-0.02em'
-            }}>
-              FIGHTERS
-            </h2>
-          </div>
+
         </div>
 
         {/* Navigation */}
@@ -317,7 +308,7 @@ const App = () => {
               <div style={{ marginTop: '50px' }}>
                 <div style={{ display: 'flex', gap: '20px', marginBottom: '30px' }}>
                   <div style={{ width: '50px', height: '50px', backgroundColor: 'var(--soft-gray)', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <MapPin color="var(--tennis-green)" size={24} />
+                    <MapPin color="black" size={24} />
                   </div>
                   <div>
                     <h4 style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.1em', fontWeight: 800 }}>Location</h4>
@@ -327,7 +318,7 @@ const App = () => {
                 
                 <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
                   <div style={{ width: '50px', height: '50px', backgroundColor: 'var(--soft-gray)', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Phone color="var(--tennis-green)" size={24} />
+                    <Phone color="black" size={24} />
                   </div>
                   <div>
                     <h4 style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.1em', fontWeight: 800 }}>Contact</h4>
