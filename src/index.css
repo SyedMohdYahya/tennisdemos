@@ -1,0 +1,91 @@
+:root {
+  --base-creamy: #FFFFFF;
+  --tennis-green: #DFFF00; /* Vibrant Lime/Tennis Ball Green */
+  --accent-green: #BFFF00;
+  --deep-black: #0A0A0A;
+  --soft-gray: #F0F0F0;
+  --gold: #C5A059;
+  
+  --spacing-1: 8px;
+  --spacing-2: 16px;
+  --spacing-3: 24px;
+  --spacing-4: 32px;
+  --spacing-6: 48px;
+  --spacing-8: 64px;
+  --spacing-12: 96px;
+
+  --font-main: 'Outfit', sans-serif;
+  --font-accent: 'Playfair Display', serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--base-creamy);
+  color: var(--deep-black);
+  font-family: var(--font-main);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--base-creamy);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tennis-green);
+  border-radius: 10px;
+}
+
+/* Utilities */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-4);
+}
+
+.section-padding {
+  padding: var(--spacing-12) 0;
+}
+
+.luxury-text {
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--gold);
+}
