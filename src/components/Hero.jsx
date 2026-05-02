@@ -9,21 +9,46 @@ const Hero = () => {
 
   // Preload images
   useEffect(() => {
-    const loadedImages = [];
-    let loadedCount = 0;
+    const loadedImages = new Array(frameCount);
+    
+    const loadImage = (index) => {
+      if (loadedImages[index]) return Promise.resolve();
+      return new Promise((resolve) => {
+        const img = new Image();
+        const paddedIndex = index.toString().padStart(3, '0');
+        if (index === 5) img.fetchPriority = 'high';
+        img.src = `/images/sequence/teeanimfav no bg_${paddedIndex}.png`;
+        img.onload = () => {
+          loadedImages[index] = img;
+          // Batch updates to reduce re-renders
+          if (index === 5 || index % 5 === 0 || index === frameCount - 1) {
+            setImages([...loadedImages]);
+          }
+          resolve();
+        };
+        img.onerror = resolve; // Continue on error
+      });
+    };
 
-    for (let i = 0; i < frameCount; i++) {
-      const img = new Image();
-      const paddedIndex = i.toString().padStart(3, '0');
-      img.src = `/images/sequence/teeanimfav no bg_${paddedIndex}.png`;
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === frameCount) {
-          setImages(loadedImages);
+    // Phase 1: Load first frame immediately
+    loadImage(5).then(() => {
+      // Phase 2: Load essential frames (every 5th) for quick preview
+      const essentialFrames = [];
+      for (let i = 0; i < frameCount; i += 5) {
+        essentialFrames.push(loadImage(i));
+      }
+      
+      Promise.all(essentialFrames).then(() => {
+        // Phase 3: Load all remaining frames
+        const remainingFrames = [];
+        for (let i = 0; i < frameCount; i++) {
+          remainingFrames.push(loadImage(i));
         }
-      };
-      loadedImages.push(img);
-    }
+        Promise.all(remainingFrames).then(() => {
+          setImages([...loadedImages]);
+        });
+      });
+    });
   }, []);
 
   const { scrollYProgress } = useScroll({
