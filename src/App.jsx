@@ -4,6 +4,19 @@ import { Trophy, Users, Calendar, MapPin, Phone, Star, MessageCircle, ExternalLi
 import Hero from './components/Hero';
 import Testimonials from './components/Testimonials';
 
+const GraffitiLayer = () => (
+  <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'none' }}>
+    <div style={{ 
+      position: 'absolute', 
+      top: 0, 
+      left: 0, 
+      width: '100%', 
+      height: '100%', 
+      backgroundColor: 'var(--base-creamy)',
+    }} />
+  </div>
+);
+
 const App = () => {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -39,26 +52,7 @@ const App = () => {
         padding: isMobile ? '0 20px' : '0 60px',
         justifyContent: 'space-between'
       }}>
-        {/* Logo */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          pointerEvents: 'auto'
-        }}>
-          <img 
-            src="/images/logo.jfif" 
-            alt="Fighters Logo"
-            style={{
-              width: isMobile ? '40px' : '55px',
-              height: 'auto',
-              borderRadius: '8px',
-              objectFit: 'contain',
-              mixBlendMode: 'multiply'
-            }} 
-          />
 
-        </div>
 
         {/* Navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
@@ -111,38 +105,9 @@ const App = () => {
         </div>
       </header>
 
-      {/* Global Background Decorative Lines - High Density Street Style */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'none' }}>
-        <svg width="100%" height="100%" style={{ opacity: 0.25 }}>
-          {/* Main Flowing Paths */}
-          <motion.path d="M-50,100 Q200,50 400,150 T800,100 T1200,200" stroke="var(--tennis-green)" strokeWidth="2" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 5, repeat: Infinity }} />
-          <motion.path d="M1100,-100 Q800,200 1000,500 T800,900" stroke="var(--tennis-green)" strokeWidth="1" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 7, repeat: Infinity, delay: 2 }} />
-          
-          {/* Sharp Graffiti Accents */}
-          <motion.path d="M50,50 L150,80 L80,200" stroke="var(--tennis-green)" strokeWidth="0.5" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 3, repeat: Infinity, repeatType: 'reverse' }} />
-          <motion.path d="M900,800 L850,950 L1050,900" stroke="var(--tennis-green)" strokeWidth="0.5" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 4, repeat: Infinity, repeatType: 'reverse' }} />
-          
-          {/* Diagonal Speed Lines */}
-          {[...Array(5)].map((_, i) => (
-            <motion.line 
-              key={i}
-              x1={10 + i * 5} y1="-10" x2={100 + i * 5} y2="200"
-              stroke="var(--tennis-green)" strokeWidth="0.3"
-              initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-              transition={{ duration: 2, delay: i * 0.2, repeat: Infinity }}
-            />
-          ))}
-          
-          {/* Right Side Accents */}
-          <motion.path d="M1000,200 L950,250 L1020,300" stroke="var(--tennis-green)" strokeWidth="0.8" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 5, repeat: Infinity }} />
-        </svg>
-      </div>
+      <GraffitiLayer />
 
-      {/* Parallax Background Text */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -2, pointerEvents: 'none', opacity: 0.03 }}>
-        <h1 style={{ fontSize: '30vw', fontWeight: 900, color: 'var(--tennis-green)', position: 'absolute', top: '20%', left: '-10%', transform: 'rotate(-10deg)' }}>FIGHTERS</h1>
-        <h1 style={{ fontSize: '20vw', fontWeight: 900, color: 'var(--tennis-green)', position: 'absolute', bottom: '10%', right: '-5%', transform: 'rotate(5deg)' }}>RIYADH</h1>
-      </div>
+
 
       {/* Scroll Progress Bar */}
       <motion.div
@@ -212,13 +177,13 @@ const App = () => {
       </AnimatePresence>
 
       <Hero />
-      <div style={{ marginTop: '-120vh', position: 'relative', zIndex: 10, backgroundColor: 'white' }}> 
+      <div style={{ position: 'relative', zIndex: 10, backgroundColor: 'transparent', color: 'var(--deep-black)' }}> 
         <Testimonials isMobile={isMobile} />
       </div>
 
       {/* Rest of the sections remain the same... */}
       {/* About Section */}
-      <section id="about" className="section-padding" style={{ position: 'relative', zIndex: 5, backgroundColor: 'var(--base-creamy)' }}>
+      <section id="about" className="section-padding" style={{ position: 'relative', zIndex: 5, backgroundColor: 'var(--base-creamy)', color: 'var(--deep-black)' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '40px' : '80px', alignItems: 'center' }}>
             <motion.div
@@ -226,7 +191,14 @@ const App = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h2 style={{ fontSize: isMobile ? '3rem' : '5rem', lineHeight: 1, marginBottom: '30px' }}>URBAN <br /><span style={{ color: 'var(--tennis-green)', WebkitTextStroke: '1px black' }}>COURTS</span></h2>
+              <h2 style={{ 
+                fontSize: isMobile ? '3rem' : '5rem', 
+                lineHeight: 1, 
+                marginBottom: '30px',
+                color: 'var(--tennis-green)',
+                textShadow: '0 0 10px rgba(223, 255, 0, 0.5), 5px 5px 0px rgba(0,0,0,0.8)',
+                WebkitTextStroke: '1px black'
+              }}>URBAN <br /><span>COURTS</span></h2>
               <p style={{ fontSize: '1.1rem', lineHeight: 1.6, color: '#444' }}>
                 Fighters Tennis Academy brings a raw, high-energy street aesthetic to the world of luxury tennis. We aren't just an academy; we are a movement.
               </p>
@@ -270,7 +242,11 @@ const App = () => {
       <section id="facilities" style={{ backgroundColor: 'var(--deep-black)', color: 'white' }} className="section-padding">
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-            <h2 style={{ fontSize: isMobile ? '2.5rem' : '3rem' }}>Our Facilities</h2>
+            <h2 style={{ 
+              fontSize: isMobile ? '2.5rem' : '3rem',
+              color: 'var(--tennis-green)',
+              textShadow: '0 0 10px rgba(223, 255, 0, 0.3)'
+            }}>Our Facilities</h2>
             <div style={{ width: '100px', height: '4px', backgroundColor: 'var(--tennis-green)', margin: '20px auto' }} />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '30px' }}>

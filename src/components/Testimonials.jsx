@@ -73,10 +73,9 @@ const Testimonials = ({ isMobile }) => {
                   <div style={{ 
                     marginTop: isMobile ? '40px' : '60px', 
                     display: 'flex', 
-                    alignItems: 'center', 
+                    alignItems: isMobile ? 'flex-start' : 'center', 
                     justifyContent: 'space-between',
                     flexDirection: isMobile ? 'column' : 'row',
-                    alignItems: isMobile ? 'flex-start' : 'center',
                     gap: isMobile ? '30px' : '0',
                     borderTop: '1px solid #eee',
                     paddingTop: '30px'

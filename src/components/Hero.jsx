@@ -5,7 +5,7 @@ const Hero = () => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [images, setImages] = useState([]);
-  const frameCount = 51;
+  const frameCount = 79;
 
   // Preload images
   useEffect(() => {
@@ -15,13 +15,20 @@ const Hero = () => {
       if (loadedImages[index]) return Promise.resolve();
       return new Promise((resolve) => {
         const img = new Image();
-        const paddedIndex = index.toString().padStart(3, '0');
-        if (index === 5) img.fetchPriority = 'high';
-        img.src = `/images/sequence/teeanimfav no bg_${paddedIndex}.png`;
-        img.onload = () => {
+        const paddedIndex = index.toString().padStart(4, '0');
+        if (index === 12) img.fetchPriority = 'high';
+        img.src = `/images/sequence/frame_${paddedIndex}.png`;
+        img.onload = async () => {
+          try {
+            // Force browser to decode the image off the main thread before using it.
+            // This eliminates the notorious "first scroll stutter" caused by lazy decoding.
+            if (img.decode) await img.decode();
+          } catch (e) {
+            console.warn("Decoding failed for frame", index);
+          }
           loadedImages[index] = img;
           // Batch updates to reduce re-renders
-          if (index === 5 || index % 5 === 0 || index === frameCount - 1) {
+          if (index === 12 || index % 5 === 0 || index === frameCount - 1) {
             setImages([...loadedImages]);
           }
           resolve();
@@ -31,7 +38,7 @@ const Hero = () => {
     };
 
     // Phase 1: Load first frame immediately
-    loadImage(5).then(() => {
+    loadImage(12).then(() => {
       // Phase 2: Load essential frames (every 5th) for quick preview
       const essentialFrames = [];
       for (let i = 0; i < frameCount; i += 5) {
@@ -56,15 +63,17 @@ const Hero = () => {
     offset: ["start start", "end end"]
   });
 
+  // To achieve a "3D smooth" feel on discrete mouse wheels, we MUST interpolate the scroll.
+  // We use a very low mass and high stiffness so it tracks instantly (no lag) but fills in the missing frames.
   const smoothScroll = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
+    stiffness: 400,
+    damping: 40,
+    mass: 0.1,
     restDelta: 0.001
   });
 
-  // Map scroll progress (0 to 0.7) to frame index (starting from index 5)
-  // This leaves 30% of the scroll space as a 'pause' on the last frame
-  const frameIndex = useTransform(smoothScroll, [0, 0.7], [5, frameCount - 1], { clamp: true });
+  // Map interpolated scroll progress (0 to 0.9) to frame index
+  const frameIndex = useTransform(smoothScroll, [0, 0.9], [12, frameCount - 1], { clamp: true });
 
   // Handle Mobile Responsiveness via state
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -75,14 +84,21 @@ const Hero = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const lastDrawnIndex = useRef(-1);
+
   // Render Frame
   useEffect(() => {
     const unsubscribe = frameIndex.on("change", (latest) => {
       if (images.length === 0 || !canvasRef.current) return;
 
       const index = Math.min(Math.floor(latest), frameCount - 1);
+      
+      // Prevent redundant draws of the exact same frame
+      if (index === lastDrawnIndex.current) return;
+      lastDrawnIndex.current = index;
+
       const canvas = canvasRef.current;
-      const context = canvas.getContext('2d');
+      const context = canvas.getContext('2d', { alpha: true }); // optimize context
       const image = images[index];
 
       if (!image) return;
@@ -99,12 +115,13 @@ const Hero = () => {
     return () => unsubscribe();
   }, [images, frameIndex]);
 
-  // Draw first frame (index 5)
+  // Draw first frame (index 12)
   useEffect(() => {
-    if (images.length > 5 && canvasRef.current) {
+    if (images.length > 12 && canvasRef.current) {
       const canvas = canvasRef.current;
       const context = canvas.getContext('2d');
-      const image = images[5];
+      const image = images[12];
+      if (!image) return;
       context.clearRect(0, 0, canvas.width, canvas.height);
       const scale = Math.min(canvas.width / image.width, canvas.height / image.height) * 0.9;
       const x = (canvas.width / 2) - (image.width / 2) * scale;
@@ -121,117 +138,34 @@ const Hero = () => {
         height: '100vh',
         width: '100%',
         overflow: 'hidden',
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+        display: 'flex',
         alignItems: 'center',
-        backgroundColor: 'transparent', // Let global white/lines show through
+        justifyContent: 'center',
+        backgroundColor: 'var(--tennis-green)',
         padding: isMobile ? '80px 20px' : '0'
       }}>
-        {/* Left Side: Academy Info */}
-        <div className="container" style={{
-          paddingLeft: isMobile ? '0' : '10%',
-          zIndex: 10,
-          textAlign: isMobile ? 'center' : 'left',
-          order: isMobile ? 2 : 1
-        }}>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <span style={{ 
-              color: 'var(--gold)', 
-              textTransform: 'uppercase', 
-              letterSpacing: '0.4em', 
-              fontSize: '0.7rem',
-              fontWeight: 800 
-            }}>
-              Elite Academy • Riyadh
-            </span>
-            <h1 style={{
-              fontSize: isMobile ? '3rem' : 'clamp(3rem, 6vw, 6rem)',
-              fontWeight: 900,
-              lineHeight: 1,
-              color: 'var(--deep-black)',
-              marginTop: '15px',
-              marginBottom: '20px'
-            }}>
-              FIGHTERS<br />
-              <span style={{ color: 'var(--tennis-green)', WebkitTextStroke: '1px black' }}>TENNIS</span>
-            </h1>
-            <p style={{
-              fontSize: isMobile ? '1rem' : '1.2rem',
-              lineHeight: 1.6,
-              color: '#555',
-              maxWidth: '500px',
-              margin: isMobile ? '0 auto 30px' : '0 0 40px'
-            }}>
-              Join the Kingdom's most exclusive tennis community. World-class facilities and expert coaching in the heart of Riyadh.
-            </p>
-            <button style={{
-              backgroundColor: 'var(--deep-black)',
-              color: 'white',
-              padding: isMobile ? '15px 35px' : '20px 50px',
-              borderRadius: '100px',
-              fontSize: '0.9rem',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em'
-            }}>
-              Join Now
-            </button>
-          </motion.div>
-        </div>
-
-        {/* Right Side: Image Sequence */}
+        {/* Messy Graffiti Background Text Layer */}
         <div style={{
-          height: isMobile ? '40vh' : '100%',
-          width: '100%',
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          order: isMobile ? 1 : 2
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%) scale(2.8) rotate(-8deg)',
+          fontFamily: "'Sedgwick Ave Display', cursive",
+          fontSize: '18vw',
+          color: 'var(--deep-black)',
+          lineHeight: 0.7,
+          textAlign: 'center',
+          opacity: 0.08,
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+          zIndex: 0
         }}>
-          <canvas
-            ref={canvasRef}
-            width={1080}
-            height={1080}
-            style={{
-              width: '100%',
-              height: isMobile ? '100%' : '90%',
-              objectFit: 'contain',
-              zIndex: 1,
-              position: 'relative'
-            }}
-          />
+          <div>Fighters</div>
+          <div>Tennis</div>
+          <div>Academy</div>
         </div>
 
-        {/* Tennis Ball Outline - Bottom Left Corner */}
-        {!isMobile && (
-          <motion.div 
-            style={{
-              position: 'absolute',
-              bottom: '40px',
-              left: '60px',
-              width: '180px',
-              height: '180px',
-              zIndex: 5,
-              opacity: 0.3,
-              pointerEvents: 'none'
-            }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          >
-            <svg viewBox="0 0 100 100" fill="none" stroke="var(--tennis-green)" strokeWidth="0.5">
-              <circle cx="50" cy="50" r="48" />
-              <path d="M15,30 Q50,50 85,30" />
-              <path d="M15,70 Q50,50 85,70" />
-            </svg>
-          </motion.div>
-        )}
-
-        {/* Decorative Street Style Green Lines (Hero Specific) */}
+        {/* Random Black Street Art Elements */}
         <div style={{
           position: 'absolute',
           top: 0,
@@ -239,30 +173,78 @@ const Hero = () => {
           width: '100%',
           height: '100%',
           pointerEvents: 'none',
-          zIndex: 0,
-          opacity: 0.15
+          zIndex: 1
         }}>
-          <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <motion.path 
-              d="M-10,20 L30,40 L10,80 L110,60" 
-              stroke="var(--tennis-green)" 
-              strokeWidth="0.5" 
-              fill="none"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' }}
-            />
-            <motion.path 
-              d="M110,10 L70,30 L90,70 L-10,90" 
-              stroke="var(--tennis-green)" 
-              strokeWidth="0.3" 
-              fill="none"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 3, delay: 1, repeat: Infinity, repeatType: 'reverse' }}
-            />
+          <svg style={{ position: 'absolute', top: '20%', left: '12%', opacity: 0.5 }} width="50" height="50" viewBox="0 0 50 50">
+            <path d="M25 0 L25 50 M0 25 L50 25" stroke="var(--deep-black)" strokeWidth="6" strokeLinecap="round" />
+          </svg>
+          <svg style={{ position: 'absolute', bottom: '15%', right: '10%', opacity: 0.7, transform: 'rotate(25deg)' }} width="30" height="30" viewBox="0 0 50 50">
+            <path d="M25 0 L25 50 M0 25 L50 25" stroke="var(--deep-black)" strokeWidth="8" strokeLinecap="round" />
+          </svg>
+          <svg style={{ position: 'absolute', top: '70%', left: '5%', opacity: 0.4 }} width="80" height="50" viewBox="0 0 80 50" fill="none">
+            <path d="M0 25 L20 0 L40 50 L60 0 L80 25" stroke="var(--deep-black)" strokeWidth="5" strokeLinejoin="round" />
+          </svg>
+          {/* Splatter Dots */}
+          <svg style={{ position: 'absolute', top: '10%', right: '20%', opacity: 0.9 }} width="40" height="40">
+            <circle cx="15" cy="15" r="8" fill="var(--deep-black)" />
+            <circle cx="30" cy="5" r="4" fill="var(--deep-black)" />
+            <circle cx="5" cy="30" r="5" fill="var(--deep-black)" />
           </svg>
         </div>
+
+        {/* Dense Main Graffiti Text */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          zIndex: 5
+        }}>
+          <div style={{
+            fontFamily: "'Sedgwick Ave Display', cursive",
+            fontSize: isMobile ? '24vw' : '18vw',
+            color: 'var(--deep-black)',
+            lineHeight: 0.65,
+            textAlign: 'center',
+            opacity: 0.95,
+            transform: 'rotate(-6deg)'
+          }}>
+            <div style={{ transform: 'translateX(-8%) rotate(-3deg)' }}>Fighters</div>
+            <div style={{ transform: 'translateX(5%) rotate(4deg)', position: 'relative', zIndex: 2 }}>Tennis</div>
+            <div style={{ transform: 'translateX(-4%) rotate(-2deg)' }}>Academy</div>
+          </div>
+        </div>
+
+        {/* Centered Image Sequence (Foreground) */}
+        <div style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          zIndex: 10
+        }}>
+          <canvas
+            ref={canvasRef}
+            width={1080}
+            height={1080}
+            style={{
+              width: 'auto',
+              height: isMobile ? '60%' : '90%',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0px 30px 40px rgba(0, 0, 0, 0.25))'
+            }}
+          />
+        </div>
+
+
+
       </div>
     </section>
   );
