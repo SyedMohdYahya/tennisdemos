@@ -1,134 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import React, { useEffect, useState, useRef } from 'react';
+import ImageSequence from './ImageSequence';
 
 const Hero = () => {
-  const canvasRef = useRef(null);
-  const containerRef = useRef(null);
-  const [images, setImages] = useState([]);
-  const frameCount = 79;
-
-  // Preload images
-  useEffect(() => {
-    const loadedImages = new Array(frameCount);
-    
-    const loadImage = (index) => {
-      if (loadedImages[index]) return Promise.resolve();
-      return new Promise((resolve) => {
-        const img = new Image();
-        const paddedIndex = index.toString().padStart(4, '0');
-        if (index === 12) img.fetchPriority = 'high';
-        img.src = `/images/sequence/frame_${paddedIndex}.png`;
-        img.onload = async () => {
-          try {
-            // Force browser to decode the image off the main thread before using it.
-            // This eliminates the notorious "first scroll stutter" caused by lazy decoding.
-            if (img.decode) await img.decode();
-          } catch (e) {
-            console.warn("Decoding failed for frame", index);
-          }
-          loadedImages[index] = img;
-          // Batch updates to reduce re-renders
-          if (index === 12 || index % 5 === 0 || index === frameCount - 1) {
-            setImages([...loadedImages]);
-          }
-          resolve();
-        };
-        img.onerror = resolve; // Continue on error
-      });
-    };
-
-    // Phase 1: Load first frame immediately
-    loadImage(12).then(() => {
-      // Phase 2: Load essential frames (every 5th) for quick preview
-      const essentialFrames = [];
-      for (let i = 0; i < frameCount; i += 5) {
-        essentialFrames.push(loadImage(i));
-      }
-      
-      Promise.all(essentialFrames).then(() => {
-        // Phase 3: Load all remaining frames
-        const remainingFrames = [];
-        for (let i = 0; i < frameCount; i++) {
-          remainingFrames.push(loadImage(i));
-        }
-        Promise.all(remainingFrames).then(() => {
-          setImages([...loadedImages]);
-        });
-      });
-    });
-  }, []);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  // To achieve a "3D smooth" feel on discrete mouse wheels, we MUST interpolate the scroll.
-  // We use a very low mass and high stiffness so it tracks instantly (no lag) but fills in the missing frames.
-  const smoothScroll = useSpring(scrollYProgress, {
-    stiffness: 400,
-    damping: 40,
-    mass: 0.1,
-    restDelta: 0.001
-  });
-
-  // Map interpolated scroll progress (0 to 0.9) to frame index
-  const frameIndex = useTransform(smoothScroll, [0, 0.9], [12, frameCount - 1], { clamp: true });
-
-  // Handle Mobile Responsiveness via state
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const lastDrawnIndex = useRef(-1);
-
-  // Render Frame
-  useEffect(() => {
-    const unsubscribe = frameIndex.on("change", (latest) => {
-      if (images.length === 0 || !canvasRef.current) return;
-
-      const index = Math.min(Math.floor(latest), frameCount - 1);
-      
-      // Prevent redundant draws of the exact same frame
-      if (index === lastDrawnIndex.current) return;
-      lastDrawnIndex.current = index;
-
-      const canvas = canvasRef.current;
-      const context = canvas.getContext('2d', { alpha: true }); // optimize context
-      const image = images[index];
-
-      if (!image) return;
-
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      
-      const scale = Math.min(canvas.width / image.width, canvas.height / image.height) * 0.9;
-      const x = (canvas.width / 2) - (image.width / 2) * scale;
-      const y = (canvas.height / 2) - (image.height / 2) * scale;
-
-      context.drawImage(image, x, y, image.width * scale, image.height * scale);
-    });
-
-    return () => unsubscribe();
-  }, [images, frameIndex]);
-
-  // Draw first frame (index 12)
-  useEffect(() => {
-    if (images.length > 12 && canvasRef.current) {
-      const canvas = canvasRef.current;
-      const context = canvas.getContext('2d');
-      const image = images[12];
-      if (!image) return;
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      const scale = Math.min(canvas.width / image.width, canvas.height / image.height) * 0.9;
-      const x = (canvas.width / 2) - (image.width / 2) * scale;
-      const y = (canvas.height / 2) - (image.height / 2) * scale;
-      context.drawImage(image, x, y, image.width * scale, image.height * scale);
-    }
-  }, [images]);
 
   return (
     <section ref={containerRef} style={{ height: '500vh', position: 'relative' }}>
@@ -220,31 +101,32 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Centered Image Sequence (Foreground) */}
+        {/* Custom Canvas Image Sequence (Foreground) */}
         <div style={{
-          height: '100%',
-          width: '100%',
+          height: isMobile ? '60%' : '90%',
+          width: isMobile ? '90%' : '70%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
           zIndex: 10
         }}>
-          <canvas
-            ref={canvasRef}
-            width={1080}
-            height={1080}
-            style={{
-              width: 'auto',
-              height: isMobile ? '60%' : '90%',
-              objectFit: 'contain',
-              filter: 'drop-shadow(0px 30px 40px rgba(0, 0, 0, 0.25))'
-            }}
+          <ImageSequence 
+            containerRef={containerRef} 
+            sequences={[
+              {
+                baseUrl: '/frames_a/frame_',
+                start: 1,
+                end: 59
+              },
+              {
+                baseUrl: 'https://syedyahyatirmizi.sirv.com/processed_frames/frame_',
+                start: 2,
+                end: 31
+              }
+            ]}
           />
         </div>
-
-
-
       </div>
     </section>
   );

@@ -27,6 +27,20 @@ const App = () => {
 
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [showHeader, setShowHeader] = React.useState(false);
+  const { scrollY } = useScroll();
+
+  React.useEffect(() => {
+    return scrollY.on("change", (latest) => {
+      // Show header after hero animation is mostly finished
+      // Hero is 500vh, animation ends at 0.9 progress (450vh)
+      if (latest > window.innerHeight * 4.2) {
+        setShowHeader(true);
+      } else {
+        setShowHeader(false);
+      }
+    });
+  }, [scrollY]);
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -37,21 +51,29 @@ const App = () => {
   return (
     <div className="app-wrapper" style={{ position: 'relative' }}> {/* Removed overflowX: hidden to fix sticky animation */}
       {/* Full Width Glassmorphism Header */}
-      <header style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: isMobile ? '70px' : '90px',
-        zIndex: 1100,
-        background: 'rgba(255, 255, 255, 0.4)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(223, 255, 0, 0.2)',
-        display: 'flex',
-        alignItems: 'center',
-        padding: isMobile ? '0 20px' : '0 60px',
-        justifyContent: 'space-between'
-      }}>
+      <AnimatePresence>
+        {showHeader && (
+          <motion.header 
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: isMobile ? '70px' : '90px',
+              zIndex: 1100,
+              background: 'rgba(255, 255, 255, 0.4)',
+              backdropFilter: 'blur(20px)',
+              borderBottom: '1px solid rgba(223, 255, 0, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              padding: isMobile ? '0 20px' : '0 60px',
+              justifyContent: 'space-between'
+            }}
+          >
 
 
         {/* Navigation */}
@@ -103,7 +125,9 @@ const App = () => {
             </button>
           )}
         </div>
-      </header>
+      </motion.header>
+    )}
+  </AnimatePresence>
 
       <GraffitiLayer />
 
