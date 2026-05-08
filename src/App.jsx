@@ -17,7 +17,74 @@ const GraffitiLayer = () => (
   </div>
 );
 
+const GlobalLoader = ({ progress }) => (
+  <motion.div
+    initial={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.8, ease: "easeInOut" }}
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100vh',
+      backgroundColor: 'var(--deep-black)',
+      zIndex: 9999,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '40px'
+    }}
+  >
+    <div style={{ position: 'relative', width: '150px', height: '150px' }}>
+      {/* Tennis Ball */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        style={{
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'var(--tennis-green)',
+          borderRadius: '50%',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: 'inset -15px -15px 30px rgba(0,0,0,0.2), 0 0 50px rgba(223, 255, 0, 0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          border: '2px solid rgba(0,0,0,0.1)'
+        }}
+      >
+        {/* Tennis Ball Lines */}
+        <svg viewBox="0 0 100 100" style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0.4 }}>
+          <path d="M0 50 Q25 50 50 0" fill="none" stroke="white" strokeWidth="2" />
+          <path d="M50 100 Q75 50 100 50" fill="none" stroke="white" strokeWidth="2" />
+        </svg>
+        
+        {/* Percentage */}
+        <div style={{ 
+          color: 'var(--deep-black)', 
+          fontSize: '2rem', 
+          fontWeight: 900, 
+          zIndex: 10,
+          fontFamily: 'Outfit, sans-serif'
+        }}>
+          {progress}%
+        </div>
+      </motion.div>
+    </div>
+    
+    <div style={{ textAlign: 'center' }}>
+      <h2 style={{ color: 'white', fontSize: '1rem', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '10px' }}>Fighters Academy</h2>
+      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Preparing Your Gear...</p>
+    </div>
+  </motion.div>
+);
+
 const App = () => {
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [loadProgress, setLoadProgress] = React.useState(0);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -32,8 +99,6 @@ const App = () => {
 
   React.useEffect(() => {
     return scrollY.on("change", (latest) => {
-      // Show header after hero animation is mostly finished
-      // Hero is 500vh, animation ends at 0.9 progress (450vh)
       if (latest > window.innerHeight * 4.2) {
         setShowHeader(true);
       } else {
@@ -49,158 +114,132 @@ const App = () => {
   }, []);
 
   return (
-    <div className="app-wrapper" style={{ position: 'relative' }}> {/* Removed overflowX: hidden to fix sticky animation */}
-      {/* Full Width Glassmorphism Header */}
+    <>
       <AnimatePresence>
-        {showHeader && (
-          <motion.header 
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -100, opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: isMobile ? '70px' : '90px',
-              zIndex: 1100,
-              background: 'rgba(255, 255, 255, 0.4)',
-              backdropFilter: 'blur(20px)',
-              borderBottom: '1px solid rgba(223, 255, 0, 0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              padding: isMobile ? '0 20px' : '0 60px',
-              justifyContent: 'space-between'
-            }}
-          >
-
-
-        {/* Navigation */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
-          {!isMobile && (
-            <div style={{ 
-              display: 'flex', 
-              gap: '30px', 
-              textTransform: 'uppercase', 
-              fontSize: '0.75rem', 
-              fontWeight: 800, 
-              letterSpacing: '0.15em', 
-              whiteSpace: 'nowrap' 
-            }}>
-              <a href="#reviews" style={{ textDecoration: 'none', color: 'inherit' }}>Reviews</a>
-              <a href="#about" style={{ textDecoration: 'none', color: 'inherit' }}>About</a>
-              <a href="#facilities" style={{ textDecoration: 'none', color: 'inherit' }}>Facilities</a>
-              <a href="#contact" style={{ textDecoration: 'none', color: 'inherit' }}>Contact</a>
-            </div>
-          )}
-
-          {isMobile ? (
-            <button 
-              onClick={() => setIsMenuOpen(true)} 
-              style={{ 
-                backgroundColor: 'transparent', 
-                border: 'none', 
-                color: 'var(--deep-black)',
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <Menu size={28} />
-            </button>
-          ) : (
-            <button style={{
-              backgroundColor: 'var(--deep-black)',
-              color: 'white',
-              padding: '12px 35px',
-              borderRadius: '100px',
-              fontSize: '0.75rem',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              border: 'none',
-              cursor: 'pointer',
-              letterSpacing: '0.05em'
-            }}>
-              BOOK NOW
-            </button>
-          )}
-        </div>
-      </motion.header>
-    )}
-  </AnimatePresence>
-
-      <GraffitiLayer />
-
-
-
-      {/* Scroll Progress Bar */}
-      <motion.div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '5px',
-          backgroundColor: 'var(--tennis-green)',
-          transformOrigin: '0%',
-          zIndex: 1000,
-          scaleX
-        }}
-      />
-
-      {/* Full Screen Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100vh',
-              backgroundColor: 'var(--deep-black)',
-              zIndex: 2000,
-              display: 'flex',
-              flexDirection: 'column',
-              padding: '40px'
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={() => setIsMenuOpen(false)} style={{ backgroundColor: 'transparent', border: 'none', color: 'white' }}>
-                <X size={40} />
-              </button>
-            </div>
-            
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '30px' }}>
-              {['REVIEWS', 'ABOUT', 'FACILITIES', 'CONTACT'].map((item, i) => (
-                <motion.a
-                  key={item}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  href={`#${item.toLowerCase()}`}
-                  onClick={() => setIsMenuOpen(false)}
-                  style={{ fontSize: '3rem', fontWeight: 900, textDecoration: 'none', color: 'white', letterSpacing: '-0.02em' }}
-                >
-                  {item}<span style={{ color: 'var(--tennis-green)' }}>.</span>
-                </motion.a>
-              ))}
-            </div>
-
-            <div style={{ marginTop: 'auto' }}>
-              <button style={{ width: '100%', backgroundColor: 'var(--tennis-green)', color: 'black', padding: '25px', borderRadius: '20px', border: 'none', fontWeight: 900, fontSize: '1.2rem' }}>
-                BOOK A COURT NOW
-              </button>
-            </div>
-          </motion.div>
-        )}
+        {!isLoaded && <GlobalLoader progress={loadProgress} />}
       </AnimatePresence>
 
-      <Hero />
+      <motion.div 
+        className="app-wrapper" 
+        style={{ 
+          position: 'relative',
+          opacity: isLoaded ? 1 : 0,
+          visibility: isLoaded ? 'visible' : 'hidden'
+        }}
+        animate={{ opacity: isLoaded ? 1 : 0 }}
+        transition={{ duration: 1 }}
+      >
+        {/* Full Width Glassmorphism Header */}
+        <AnimatePresence>
+          {showHeader && (
+            <motion.header 
+              initial={{ y: -100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -100, opacity: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: isMobile ? '70px' : '90px',
+                zIndex: 1100,
+                background: 'rgba(255, 255, 255, 0.4)',
+                backdropFilter: 'blur(20px)',
+                borderBottom: '1px solid rgba(223, 255, 0, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                padding: isMobile ? '0 20px' : '0 60px',
+                justifyContent: 'space-between'
+              }}
+            >
+              {/* ... nav content ... */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
+                {!isMobile && (
+                  <div style={{ display: 'flex', gap: '30px', textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.15em', whiteSpace: 'nowrap' }}>
+                    <a href="#reviews" style={{ textDecoration: 'none', color: 'inherit' }}>Reviews</a>
+                    <a href="#about" style={{ textDecoration: 'none', color: 'inherit' }}>About</a>
+                    <a href="#facilities" style={{ textDecoration: 'none', color: 'inherit' }}>Facilities</a>
+                    <a href="#contact" style={{ textDecoration: 'none', color: 'inherit' }}>Contact</a>
+                  </div>
+                )}
+                {isMobile ? (
+                  <button onClick={() => setIsMenuOpen(true)} style={{ backgroundColor: 'transparent', border: 'none', color: 'var(--deep-black)', display: 'flex', alignItems: 'center' }}>
+                    <Menu size={28} />
+                  </button>
+                ) : (
+                  <button style={{ backgroundColor: 'var(--deep-black)', color: 'white', padding: '12px 35px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}>
+                    BOOK NOW
+                  </button>
+                )}
+              </div>
+            </motion.header>
+          )}
+        </AnimatePresence>
+
+        <GraffitiLayer />
+
+        {/* Scroll Progress Bar */}
+        <motion.div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '5px',
+            backgroundColor: 'var(--tennis-green)',
+            transformOrigin: '0%',
+            zIndex: 1000,
+            scaleX
+          }}
+        />
+
+        {/* Full Screen Mobile Menu */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: '100%' }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100vh',
+                backgroundColor: 'var(--deep-black)',
+                zIndex: 2000,
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '40px'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button onClick={() => setIsMenuOpen(false)} style={{ backgroundColor: 'transparent', border: 'none', color: 'white' }}>
+                  <X size={40} />
+                </button>
+              </div>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '30px' }}>
+                {['REVIEWS', 'ABOUT', 'FACILITIES', 'CONTACT'].map((item, i) => (
+                  <motion.a key={item} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} href={`#${item.toLowerCase()}`} onClick={() => setIsMenuOpen(false)} style={{ fontSize: '3rem', fontWeight: 900, textDecoration: 'none', color: 'white', letterSpacing: '-0.02em' }}>
+                    {item}<span style={{ color: 'var(--tennis-green)' }}>.</span>
+                  </motion.a>
+                ))}
+              </div>
+              <div style={{ marginTop: 'auto' }}>
+                <button style={{ width: '100%', backgroundColor: 'var(--tennis-green)', color: 'black', padding: '25px', borderRadius: '20px', border: 'none', fontWeight: 900, fontSize: '1.2rem' }}>
+                  BOOK A COURT NOW
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <Hero 
+          onProgress={(p) => setLoadProgress(p)} 
+          onLoadComplete={() => setIsLoaded(true)} 
+        />
       <div style={{ position: 'relative', zIndex: 10, backgroundColor: 'transparent', color: 'var(--deep-black)' }}> 
         <Testimonials isMobile={isMobile} />
       </div>

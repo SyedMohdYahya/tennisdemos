@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
-const ImageSequence = ({ sequences, containerRef, endProgress = 0.6 }) => {
+const ImageSequence = ({ sequences, containerRef, endProgress = 0.6, onProgress, onLoadComplete }) => {
   const canvasRef = useRef(null);
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [loadProgress, setLoadProgress] = useState(0);
 
   // Combine all sequence URLs into one flat array
   const allUrls = useMemo(() => {
@@ -48,11 +47,13 @@ const ImageSequence = ({ sequences, containerRef, endProgress = 0.6 }) => {
       img.onload = () => {
         loadedImages[index] = img;
         loadedCount++;
-        setLoadProgress(Math.floor((loadedCount / totalLogicalFrames) * 100));
+        const progress = Math.floor((loadedCount / totalLogicalFrames) * 100);
+        if (onProgress) onProgress(progress);
         
         if (loadedCount === totalLogicalFrames) {
           setImages(loadedImages);
           setIsLoading(false);
+          if (onLoadComplete) onLoadComplete();
         }
       };
       img.onerror = () => {
@@ -61,12 +62,13 @@ const ImageSequence = ({ sequences, containerRef, endProgress = 0.6 }) => {
         if (loadedCount === totalLogicalFrames) {
           setImages(loadedImages);
           setIsLoading(false);
+          if (onLoadComplete) onLoadComplete();
         }
       };
     };
 
     allUrls.forEach((url, index) => loadImage(url, index));
-  }, [allUrls, totalLogicalFrames]);
+  }, [allUrls, totalLogicalFrames, onProgress, onLoadComplete]);
 
   // Draw to Canvas
   useEffect(() => {
@@ -123,14 +125,6 @@ const ImageSequence = ({ sequences, containerRef, endProgress = 0.6 }) => {
 
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-      {isLoading && (
-        <div style={{ position: 'absolute', color: 'var(--deep-black)', fontWeight: 800, fontSize: '1rem', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-          <div style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}>Syncing Sequences... {loadProgress}%</div>
-          <div style={{ width: '200px', height: '4px', background: 'rgba(0,0,0,0.1)', borderRadius: '10px', overflow: 'hidden' }}>
-            <motion.div style={{ height: '100%', background: 'var(--deep-black)' }} animate={{ width: `${loadProgress}%` }} />
-          </div>
-        </div>
-      )}
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%', maxWidth: '1200px', objectFit: 'contain', filter: 'drop-shadow(0px 30px 60px rgba(0, 0, 0, 0.15))' }} role="img" aria-label="Tennis Gear Evolution Sequence" />
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ImageSequence from './ImageSequence';
 
-const Hero = () => {
+const Hero = ({ onProgress, onLoadComplete }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const containerRef = useRef(null);
 
@@ -114,6 +114,8 @@ const Hero = () => {
           <ImageSequence 
             containerRef={containerRef} 
             endProgress={isMobile ? 0.375 : 0.6}
+            onProgress={onProgress}
+            onLoadComplete={onLoadComplete}
             sequences={[
               {
                 baseUrl: '/frames_a/frame_',
