@@ -12,7 +12,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section ref={containerRef} style={{ height: '500vh', position: 'relative' }}>
+    <section ref={containerRef} style={{ height: isMobile ? '800vh' : '500vh', position: 'relative' }}>
       <div style={{
         position: 'sticky',
         top: 0,
@@ -113,6 +113,7 @@ const Hero = () => {
         }}>
           <ImageSequence 
             containerRef={containerRef} 
+            endProgress={isMobile ? 0.375 : 0.6}
             sequences={[
               {
                 baseUrl: '/frames_a/frame_',
