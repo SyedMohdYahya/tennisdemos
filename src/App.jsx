@@ -504,7 +504,8 @@ const App = () => {
           </div>
         </div>
       </footer>
-    </div>
+    </motion.div>
+    </>
   );
 };
 
