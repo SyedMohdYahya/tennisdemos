@@ -71,42 +71,42 @@ const ImageSequence = ({ sequences, containerRef, endProgress = 0.6, onProgress,
   }, [allUrls, totalLogicalFrames, onProgress, onLoadComplete]);
 
   // Draw to Canvas
-  useEffect(() => {
-    const renderFrame = () => {
-      const canvas = canvasRef.current;
-      if (!canvas || images.length === 0) return;
+  const renderFrame = React.useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || images.length === 0) return;
 
-      const ctx = canvas.getContext('2d');
-      const currentIndex = Math.min(Math.round(frameIndex.get()), images.length - 1);
-      const img = images[currentIndex];
+    const ctx = canvas.getContext('2d');
+    const currentIndex = Math.max(0, Math.min(Math.round(frameIndex.get()), images.length - 1));
+    const img = images[currentIndex];
 
-      if (img) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const canvasAspect = canvas.width / canvas.height;
-        const imgAspect = img.width / img.height;
-        
-        let drawWidth, drawHeight, offsetX, offsetY;
+    if (img) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const canvasAspect = canvas.width / canvas.height;
+      const imgAspect = img.width / img.height;
+      
+      let drawWidth, drawHeight, offsetX, offsetY;
 
-        if (canvasAspect > imgAspect) {
-          drawHeight = canvas.height;
-          drawWidth = canvas.height * imgAspect;
-          offsetX = (canvas.width - drawWidth) / 2;
-          offsetY = 0;
-        } else {
-          drawWidth = canvas.width;
-          drawHeight = canvas.width / imgAspect;
-          offsetX = 0;
-          offsetY = (canvas.height - drawHeight) / 2;
-        }
-
-        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+      if (canvasAspect > imgAspect) {
+        drawHeight = canvas.height;
+        drawWidth = canvas.height * imgAspect;
+        offsetX = (canvas.width - drawWidth) / 2;
+        offsetY = 0;
+      } else {
+        drawWidth = canvas.width;
+        drawHeight = canvas.width / imgAspect;
+        offsetX = 0;
+        offsetY = (canvas.height - drawHeight) / 2;
       }
-    };
 
+      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    }
+  }, [images, frameIndex]);
+
+  useEffect(() => {
     const unsubscribe = frameIndex.on("change", renderFrame);
     if (!isLoading) renderFrame();
     return () => unsubscribe();
-  }, [images, frameIndex, isLoading]);
+  }, [renderFrame, frameIndex, isLoading]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -116,12 +116,13 @@ const ImageSequence = ({ sequences, containerRef, endProgress = 0.6, onProgress,
         const dpr = window.devicePixelRatio || 1;
         canvas.width = width * dpr;
         canvas.height = height * dpr;
+        renderFrame(); // Redraw immediately after resize (prevents flickering/disappearing on mobile)
       }
     };
     window.addEventListener('resize', handleResize);
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [renderFrame]);
 
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
