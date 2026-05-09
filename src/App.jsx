@@ -530,12 +530,13 @@ const App = () => {
                     }}>
                     <span style={{ display: 'block' }}>Best Tennis Lessons</span>
                     <span style={{ 
-                      color: 'var(--deep-black)', 
+                      color: 'white', 
                       fontSize: isMobile ? '4.5rem' : '10rem',
                       fontFamily: "'Sedgwick Ave Display', cursive",
                       display: 'block',
                       marginTop: '0px',
-                      transform: 'rotate(-3deg)'
+                      transform: 'rotate(-3deg)',
+                      textShadow: '8px 8px 0px rgba(0,0,0,0.1)'
                     }}>
                       in Riyadh
                     </span>
