@@ -445,33 +445,50 @@ const App = () => {
               style={{
                 position: 'relative', zIndex: 10,
                 backgroundColor: 'var(--tennis-green)', overflow: 'hidden',
-                padding: '120px 0'
+                padding: isMobile ? '80px 0' : '150px 0'
               }}
             >
+              {/* Floating Decorative Elements */}
+              {!isMobile && [
+                { top: '15%', left: '10%', rotate: 15 },
+                { top: '65%', left: '5%', rotate: -20 },
+                { top: '25%', right: '8%', rotate: 45 },
+                { top: '75%', right: '12%', rotate: -10 }
+              ].map((pos, i) => (
+                <motion.div
+                  key={i}
+                  animate={{ 
+                    y: [0, -20, 0],
+                    rotate: [pos.rotate, pos.rotate + 10, pos.rotate]
+                  }}
+                  transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut" }}
+                  style={{
+                    position: 'absolute', top: pos.top, left: pos.left, right: pos.right,
+                    width: '60px', height: '60px', borderRadius: '50%',
+                    backgroundColor: 'var(--deep-black)', opacity: 0.05,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  }}
+                >
+                  <Trophy size={30} />
+                </motion.div>
+              ))}
+
               {/* Marquee Background Track */}
               <div style={{
-                position: 'absolute', top: '10%', left: 0, width: '200%',
+                position: 'absolute', top: '15%', left: 0, width: '200%',
                 display: 'flex', whiteSpace: 'nowrap', pointerEvents: 'none',
-                opacity: 0.15, transform: 'rotate(-2deg)', zIndex: 0
+                opacity: 0.12, transform: 'rotate(-3deg)', zIndex: 0
               }}>
                 <style>{`
-                  @keyframes marquee-fast {
+                  @keyframes marquee-fun {
                     0% { transform: translateX(0); }
                     100% { transform: translateX(-50%); }
                   }
                 `}</style>
-                <div style={{ animation: 'marquee-fast 20s linear infinite', display: 'flex', gap: '50px', fontSize: '8vw', fontWeight: 900, fontFamily: "'Sedgwick Ave Display', cursive" }}>
-                  <span>TRAIN LIKE A PRO • FIGHTERS TENNIS • LEVEL UP • BE UNSTOPPABLE • </span>
-                  <span>TRAIN LIKE A PRO • FIGHTERS TENNIS • LEVEL UP • BE UNSTOPPABLE • </span>
+                <div style={{ animation: 'marquee-fun 25s linear infinite', display: 'flex', gap: '80px', fontSize: '10vw', fontWeight: 900, fontFamily: "'Sedgwick Ave Display', cursive" }}>
+                  <span>BORN IN THE STREETS • PLAY LIKE A PRO • NO EXCUSES • BORN IN THE STREETS • </span>
                 </div>
               </div>
-
-              {/* Diagonal pattern overlay */}
-              <div style={{
-                position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                opacity: 0.08, pointerEvents: 'none',
-                background: 'repeating-linear-gradient(45deg, var(--deep-black) 0px, var(--deep-black) 2px, transparent 2px, transparent 20px)'
-              }} />
 
               <div
                 style={{
@@ -482,78 +499,86 @@ const App = () => {
               >
                 <motion.div
                   className="container"
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.85 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: '-50px' }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, rotate: -10 }}
+                    whileInView={{ opacity: 1, rotate: -2 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
                     style={{
-                      display: 'inline-block', padding: '10px 25px', backgroundColor: 'var(--deep-black)',
-                      color: 'var(--tennis-green)', borderRadius: '10px', fontSize: '0.8rem',
-                      fontWeight: 900, textTransform: 'uppercase', marginBottom: '30px',
-                      transform: 'rotate(-2deg)'
+                      display: 'inline-block', padding: '12px 30px', backgroundColor: 'var(--deep-black)',
+                      color: 'var(--tennis-green)', borderRadius: '4px', fontSize: '0.9rem',
+                      fontWeight: 900, textTransform: 'uppercase', marginBottom: '40px',
+                      boxShadow: '8px 8px 0px rgba(0,0,0,0.1)'
                     }}>
-                    Fighters Tennis Academy
+                    Elite Tennis Experience
                   </motion.div>
 
                   <motion.h2
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
+                    transition={{ duration: 1, delay: 0.2 }}
                     style={{
-                      fontSize: isMobile ? '3.5rem' : '7rem',
-                      fontWeight: 900, lineHeight: 0.9, letterSpacing: '-0.05em',
-                      maxWidth: '1200px', margin: '0 auto', textTransform: 'uppercase',
+                      fontSize: isMobile ? '3.5rem' : '8.5rem',
+                      fontWeight: 900, lineHeight: 0.85, letterSpacing: '-0.06em',
+                      maxWidth: '1300px', margin: '0 auto', textTransform: 'uppercase',
                       color: 'var(--deep-black)', position: 'relative'
                     }}>
                     <span style={{ display: 'block' }}>Best Tennis Lessons</span>
                     <span style={{ 
                       color: 'white', 
-                      WebkitTextStroke: '2px var(--deep-black)',
-                      fontSize: isMobile ? '4rem' : '8rem',
+                      WebkitTextStroke: isMobile ? '1px var(--deep-black)' : '3px var(--deep-black)',
+                      fontSize: isMobile ? '4.5rem' : '10rem',
                       fontFamily: "'Playfair Display', serif",
                       fontStyle: 'italic',
                       display: 'block',
-                      marginTop: '10px'
-                    }}>in Riyadh</span>
+                      marginTop: '20px',
+                      position: 'relative'
+                    }}>
+                      {/* Spray Paint Blob Background */}
+                      <div style={{
+                        position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                        width: '120%', height: '140%', backgroundColor: 'var(--deep-black)',
+                        opacity: 0.03, borderRadius: '50%', filter: 'blur(40px)', zIndex: -1
+                      }} />
+                      in Riyadh
+                    </span>
                   </motion.h2>
 
                   <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
+                    transition={{ duration: 1, delay: 0.5 }}
                     style={{
-                      color: 'rgba(0,0,0,0.8)', fontSize: isMobile ? '1.1rem' : '1.4rem',
-                      maxWidth: '750px', margin: '40px auto 30px', lineHeight: 1.5,
-                      fontWeight: 500
+                      color: 'rgba(0,0,0,0.85)', fontSize: isMobile ? '1.1rem' : '1.6rem',
+                      maxWidth: '800px', margin: '50px auto 40px', lineHeight: 1.4,
+                      fontWeight: 600, letterSpacing: '-0.01em'
                     }}>
-                    Expert coaching, world-class facilities, and a community that pushes you to be your best.
-                    Built for champions, inspired by the streets.
+                    Ready to crush it? Our world-class facilities and expert coaches are waiting for you in the heart of Riyadh.
                   </motion.p>
 
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
-                    style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap', marginBottom: '50px' }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                    style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap', marginBottom: '60px' }}
                   >
-                    {['Private & Group Lessons', 'All Skill Levels', 'Flexible Scheduling'].map((item, i) => (
+                    {['Private & Group', 'All Skill Levels', 'Pro Coaching'].map((item, i) => (
                       <motion.div
                         key={i}
-                        whileHover={{ scale: 1.1, rotate: i % 2 === 0 ? 2 : -2 }}
+                        whileHover={{ scale: 1.1, rotate: i % 2 === 0 ? 3 : -3, backgroundColor: 'var(--deep-black)', color: 'white' }}
                         style={{
-                          backgroundColor: 'rgba(255,255,255,0.95)', padding: '12px 28px',
-                          borderRadius: '15px', fontSize: '0.9rem', fontWeight: 800,
-                          color: 'var(--deep-black)', boxShadow: '0 10px 20px rgba(0,0,0,0.05)',
-                          border: '1px solid rgba(0,0,0,0.05)', cursor: 'default'
+                          backgroundColor: 'rgba(255,255,255,0.8)', padding: '15px 35px',
+                          borderRadius: '0px', fontSize: '1rem', fontWeight: 900,
+                          color: 'var(--deep-black)', boxShadow: '10px 10px 0px rgba(0,0,0,0.05)',
+                          border: '2px solid var(--deep-black)', cursor: 'default',
+                          textTransform: 'uppercase', transition: 'all 0.2s'
                         }}>
                         {item}
                       </motion.div>
@@ -562,28 +587,32 @@ const App = () => {
 
                   <motion.button
                     onClick={() => navigateTo('contact')}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ type: 'spring', damping: 15, delay: 0.7 }}
+                    transition={{ type: 'spring', damping: 12, delay: 0.8 }}
                     whileHover={{ 
                       scale: 1.1, 
-                      boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                       backgroundColor: 'white',
-                      color: 'var(--deep-black)'
+                      color: 'var(--deep-black)',
+                      boxShadow: '0 30px 60px rgba(0,0,0,0.4)'
                     }}
-                    whileTap={{ scale: 0.9 }}
+                    whileTap={{ scale: 0.95 }}
                     style={{
                       backgroundColor: 'var(--deep-black)', color: 'white',
-                      padding: '24px 70px', borderRadius: '15px', fontSize: '1.2rem',
+                      padding: '28px 80px', borderRadius: '0px', fontSize: '1.4rem',
                       fontWeight: 900, display: 'inline-flex', alignItems: 'center',
-                      gap: '15px', border: 'none', cursor: 'pointer',
+                      gap: '20px', border: 'none', cursor: 'pointer',
                       letterSpacing: '0.05em', textTransform: 'uppercase',
-                      transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                      transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                      boxShadow: '15px 15px 0px rgba(0,0,0,0.2)'
                     }}
                   >
-                    GET STARTED NOW <ArrowRight size={24} />
+                    BOOK YOUR SLOT <ArrowRight size={28} />
                   </motion.button>
+                </motion.div>
+              </div>
+            </section>
                 </motion.div>
               </div>
             </section>

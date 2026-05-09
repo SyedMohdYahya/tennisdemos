@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Users, Award, Calendar, Trophy, Star, ExternalLink } from 'lucide-react';
+import { MapPin, Users, Award, Calendar, Trophy, Star, ExternalLink, ArrowRight } from 'lucide-react';
 
 const AboutPage = ({ isMobile, navigateTo }) => {
   return (
