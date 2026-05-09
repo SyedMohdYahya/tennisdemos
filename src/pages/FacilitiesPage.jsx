@@ -62,62 +62,138 @@ const FacilitiesPage = ({ isMobile, navigateTo }) => {
         </div>
       </section>
 
-      {/* Facilities Grid */}
-      <section className="section-padding">
-        <div className="container">
-          <div style={{ display: 'grid', gap: '40px' }}>
-            {facilities.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '1fr' : i % 2 === 0 ? '1fr 1fr' : '1fr 1fr',
-                  gap: isMobile ? '20px' : '50px',
+      {/* Facilities List - GALLERY STYLE */}
+      <section style={{ backgroundColor: 'var(--base-creamy)', overflow: 'hidden' }}>
+        <div>
+          {facilities.map((item, i) => (
+            <div 
+              key={i} 
+              style={{ 
+                backgroundColor: i % 2 === 0 ? 'transparent' : 'var(--deep-black)',
+                color: i % 2 === 0 ? 'var(--deep-black)' : 'white',
+                padding: isMobile ? '80px 0' : '150px 0',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              {/* Decorative Large Background Number */}
+              <div style={{
+                position: 'absolute', top: '10%', [i % 2 === 0 ? 'right' : 'left']: '5%',
+                fontSize: '20vw', fontWeight: 900, 
+                color: i % 2 === 0 ? 'var(--tennis-green)' : 'rgba(188, 224, 36, 0.1)',
+                opacity: i % 2 === 0 ? 0.08 : 0.2,
+                fontFamily: "'Sedgwick Ave Display', cursive",
+                zIndex: 0, pointerEvents: 'none'
+              }}>
+                0{i + 1}
+              </div>
+
+              <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', 
+                  gap: isMobile ? '40px' : '100px',
                   alignItems: 'center',
                   direction: i % 2 !== 0 && !isMobile ? 'rtl' : 'ltr'
-                }}
-              >
-                <div style={{
-                  height: isMobile ? '250px' : '400px',
-                  borderRadius: '25px', overflow: 'hidden',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                  order: isMobile ? 1 : (i % 2 === 0 ? 0 : 1)
                 }}>
-                  <div style={{
-                    width: '100%', height: '100%',
-                    backgroundImage: `url("${item.img}")`,
-                    backgroundSize: 'cover', backgroundPosition: 'center',
-                    transition: 'transform 0.5s'
-                  }} />
-                </div>
+                  {/* Image with tilted frame */}
+                  <motion.div
+                    initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: '-100px' }}
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    style={{
+                      position: 'relative',
+                      height: isMobile ? '300px' : '500px',
+                      padding: '15px',
+                      backgroundColor: 'var(--tennis-green)',
+                      transform: isMobile ? 'none' : `rotate(${i % 2 === 0 ? 2 : -2}deg)`,
+                      boxShadow: '30px 30px 0px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    <div style={{ 
+                      width: '100%', height: '100%', overflow: 'hidden',
+                      transform: isMobile ? 'none' : `rotate(${i % 2 === 0 ? -2 : 2}deg)`,
+                      backgroundColor: '#222'
+                    }}>
+                      <motion.div 
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.6 }}
+                        style={{
+                          width: '100%', height: '100%',
+                          backgroundImage: `url("${item.img}")`,
+                          backgroundSize: 'cover', backgroundPosition: 'center'
+                        }} 
+                      />
+                    </div>
+                  </motion.div>
 
-                <div style={{ direction: 'ltr', order: isMobile ? 2 : (i % 2 === 0 ? 1 : 0) }}>
-                  <h2 style={{
-                    fontSize: isMobile ? '1.8rem' : '2.5rem',
-                    fontWeight: 900, marginBottom: '15px',
-                    letterSpacing: '-0.02em', textTransform: 'uppercase'
-                  }}>
-                    {item.name.split(' ')[0]} <span style={{ color: 'var(--tennis-green)' }}>{item.name.split(' ').slice(1).join(' ')}</span>
-                  </h2>
-                  <p style={{ color: '#555', lineHeight: 1.7, fontSize: '1.05rem', marginBottom: '25px' }}>
-                    {item.desc}
-                  </p>
-                  <div style={{ display: 'grid', gap: '12px' }}>
-                    {item.features.map((feat, j) => (
-                      <div key={j} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <CheckCircle size={18} color="var(--tennis-green)" style={{ flexShrink: 0 }} />
-                        <span style={{ color: '#444', fontSize: '0.95rem' }}>{feat}</span>
+                  {/* Text Content */}
+                  <div style={{ direction: 'ltr' }}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                      <h2 style={{
+                        fontSize: isMobile ? '2.5rem' : '4.5rem',
+                        fontWeight: 900, lineHeight: 0.9, marginBottom: '25px',
+                        textTransform: 'uppercase', letterSpacing: '-0.04em'
+                      }}>
+                        {item.name.split(' ')[0]} <span style={{ color: 'var(--tennis-green)', fontFamily: "'Playfair Display', serif", fontStyle: 'italic' }}>{item.name.split(' ').slice(1).join(' ')}</span>
+                      </h2>
+                      <p style={{ 
+                        color: i % 2 === 0 ? '#444' : '#aaa', 
+                        lineHeight: 1.6, fontSize: '1.2rem', marginBottom: '35px',
+                        fontWeight: 500
+                      }}>
+                        {item.desc}
+                      </p>
+                      
+                      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '20px' }}>
+                        {item.features.map((feat, j) => (
+                          <motion.div 
+                            key={j} 
+                            initial={{ opacity: 0, x: -10 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.4 + j * 0.1 }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '15px' }}
+                          >
+                            <div style={{ 
+                              width: '24px', height: '24px', borderRadius: '50%', 
+                              backgroundColor: 'var(--tennis-green)', display: 'flex', 
+                              alignItems: 'center', justifyContent: 'center', flexShrink: 0 
+                            }}>
+                              <CheckCircle size={14} color="black" weight="bold" />
+                            </div>
+                            <span style={{ 
+                              fontWeight: 700, fontSize: '0.9rem', 
+                              textTransform: 'uppercase', letterSpacing: '0.05em' 
+                            }}>{feat}</span>
+                          </motion.div>
+                        ))}
                       </div>
-                    ))}
+
+                      <motion.button
+                        whileHover={{ x: 10, color: 'var(--tennis-green)' }}
+                        style={{ 
+                          marginTop: '45px', display: 'flex', alignItems: 'center', 
+                          gap: '12px', background: 'none', border: 'none', 
+                          color: i % 2 === 0 ? 'black' : 'white', fontWeight: 900, 
+                          fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.1em',
+                          cursor: 'pointer' 
+                        }}
+                      >
+                        Explore Facility <ArrowRight size={20} />
+                      </motion.button>
+                    </motion.div>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

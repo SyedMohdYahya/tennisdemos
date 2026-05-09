@@ -181,50 +181,107 @@ const AboutPage = ({ isMobile, navigateTo }) => {
         </div>
       </section>
 
-      {/* Mission + Values */}
-      <section className="section-padding" style={{ backgroundColor: '#fff' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-            <h2 style={{
-              fontSize: isMobile ? '2rem' : '3rem',
-              fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.02em'
-            }}>
-              WHY <span style={{ color: 'var(--tennis-green)' }}>CHOOSE US</span>
-            </h2>
-            <div style={{ width: '60px', height: '3px', backgroundColor: 'var(--tennis-green)', margin: '15px auto 0' }} />
+      {/* Mission + Values - WHY CHOOSE US */}
+      <section className="section-padding" style={{ backgroundColor: 'var(--base-creamy)', position: 'relative', overflow: 'hidden' }}>
+        {/* Background Ghost Text */}
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotate(-5deg)',
+          fontSize: '25vw', fontWeight: 900, color: 'var(--tennis-green)', opacity: 0.03,
+          whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 0, fontFamily: "'Sedgwick Ave Display', cursive"
+        }}>
+          CHAMPIONS
+        </div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              style={{
+                fontSize: isMobile ? '3rem' : '5rem',
+                fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.04em',
+                lineHeight: 1
+              }}>
+              WHY <span style={{ color: 'var(--tennis-green)', fontStyle: 'italic', fontFamily: "'Playfair Display', serif" }}>CHOOSE US</span>
+            </motion.h2>
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: '100px' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              style={{ height: '6px', backgroundColor: 'var(--tennis-green)', margin: '20px auto 0' }}
+            />
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '30px' }}>
+
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '40px' }}>
             {[
               {
-                icon: <MapPin size={32} />,
+                icon: <MapPin size={40} />,
                 title: 'Prime Location',
-                desc: 'Located in the prestigious Al Olaya District on Al Bilad Bank metro station, making us easily accessible from anywhere in Riyadh.'
+                desc: 'Located in the prestigious Al Olaya District, easily accessible from anywhere in Riyadh.',
+                rotate: -2
               },
               {
-                icon: <Award size={32} />,
+                icon: <Award size={40} />,
                 title: 'Expert Coaching',
-                desc: 'Professional trainers provide step-by-step guidance for beginners and advanced techniques for seasoned players.'
+                desc: 'Certified trainers providing step-by-step guidance for beginners and advanced techniques.',
+                rotate: 2
               },
               {
-                icon: <Users size={32} />,
+                icon: <Users size={40} />,
                 title: 'Vibrant Community',
-                desc: 'Connect with local players and groups, participate in tournaments, and be part of a thriving tennis movement.'
+                desc: 'Connect with local players, participate in tournaments, and join the movement.',
+                rotate: -1
               }
             ].map((item, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 50, rotate: 0 }}
+                whileInView={{ opacity: 1, y: 0, rotate: isMobile ? 0 : item.rotate }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ 
+                  y: -15, 
+                  rotate: 0,
+                  scale: 1.02,
+                  boxShadow: '0 30px 60px rgba(0,0,0,0.12)'
+                }}
                 style={{
-                  padding: '40px', borderRadius: '20px', backgroundColor: 'var(--soft-gray)',
-                  border: '1px solid rgba(188, 224, 36, 0.2)'
+                  padding: '50px 40px', 
+                  borderRadius: '0px', 
+                  backgroundColor: '#fff',
+                  boxShadow: '0 15px 35px rgba(0,0,0,0.05)',
+                  borderTop: '8px solid var(--tennis-green)',
+                  position: 'relative',
+                  transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
               >
-                <div style={{ color: 'var(--tennis-green)', marginBottom: '20px' }}>{item.icon}</div>
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '12px' }}>{item.title}</h3>
-                <p style={{ color: '#666', lineHeight: 1.7 }}>{item.desc}</p>
+                {/* Decorative Number */}
+                <div style={{
+                  position: 'absolute', top: '20px', right: '30px',
+                  fontSize: '4rem', fontWeight: 900, color: 'var(--base-creamy)',
+                  zIndex: -1, fontFamily: "'Sedgwick Ave Display', cursive"
+                }}>
+                  0{i + 1}
+                </div>
+
+                <div style={{ color: 'var(--tennis-green)', marginBottom: '30px' }}>{item.icon}</div>
+                <h3 style={{ 
+                  fontSize: '1.8rem', 
+                  fontWeight: 900, 
+                  marginBottom: '15px', 
+                  textTransform: 'uppercase',
+                  letterSpacing: '-0.02em'
+                }}>{item.title}</h3>
+                <p style={{ color: '#555', lineHeight: 1.6, fontSize: '1.05rem' }}>{item.desc}</p>
+                
+                <motion.div 
+                  style={{ marginTop: '30px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--tennis-green)', fontWeight: 800, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em', cursor: 'pointer' }}
+                  whileHover={{ x: 5 }}
+                >
+                  Learn More <ArrowRight size={16} />
+                </motion.div>
               </motion.div>
             ))}
           </div>

@@ -444,57 +444,84 @@ const App = () => {
             <section
               style={{
                 position: 'relative', zIndex: 10,
-                backgroundColor: 'var(--tennis-green)', overflow: 'hidden'
+                backgroundColor: 'var(--tennis-green)', overflow: 'hidden',
+                padding: '120px 0'
               }}
             >
+              {/* Marquee Background Track */}
+              <div style={{
+                position: 'absolute', top: '10%', left: 0, width: '200%',
+                display: 'flex', whiteSpace: 'nowrap', pointerEvents: 'none',
+                opacity: 0.15, transform: 'rotate(-2deg)', zIndex: 0
+              }}>
+                <style>{`
+                  @keyframes marquee-fast {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                  }
+                `}</style>
+                <div style={{ animation: 'marquee-fast 20s linear infinite', display: 'flex', gap: '50px', fontSize: '8vw', fontWeight: 900, fontFamily: "'Sedgwick Ave Display', cursive" }}>
+                  <span>TRAIN LIKE A PRO • FIGHTERS TENNIS • LEVEL UP • BE UNSTOPPABLE • </span>
+                  <span>TRAIN LIKE A PRO • FIGHTERS TENNIS • LEVEL UP • BE UNSTOPPABLE • </span>
+                </div>
+              </div>
+
               {/* Diagonal pattern overlay */}
               <div style={{
                 position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                opacity: 0.06, pointerEvents: 'none',
+                opacity: 0.08, pointerEvents: 'none',
                 background: 'repeating-linear-gradient(45deg, var(--deep-black) 0px, var(--deep-black) 2px, transparent 2px, transparent 20px)'
               }} />
 
               <div
-                className="section-padding"
                 style={{
                   textAlign: 'center',
                   position: 'relative',
-                  overflow: 'hidden'
+                  zIndex: 1
                 }}
               >
                 <motion.div
                   className="container"
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true, margin: '-50px' }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  whileHover={{ scale: 1.02 }}
-                  style={{ transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <motion.p
-                    initial={{ opacity: 0, letterSpacing: '0.5em' }}
-                    whileInView={{ opacity: 1, letterSpacing: '0.15em' }}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.1 }}
+                    transition={{ duration: 0.6 }}
                     style={{
-                      fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase',
-                      color: 'rgba(0,0,0,0.5)', marginBottom: '15px', letterSpacing: '0.15em'
+                      display: 'inline-block', padding: '10px 25px', backgroundColor: 'var(--deep-black)',
+                      color: 'var(--tennis-green)', borderRadius: '10px', fontSize: '0.8rem',
+                      fontWeight: 900, textTransform: 'uppercase', marginBottom: '30px',
+                      transform: 'rotate(-2deg)'
                     }}>
                     Fighters Tennis Academy
-                  </motion.p>
+                  </motion.div>
 
                   <motion.h2
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.7, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
                     style={{
-                      fontSize: isMobile ? '3rem' : '5.5rem',
-                      fontWeight: 900, lineHeight: 1.1, letterSpacing: '-0.03em',
-                      maxWidth: '1000px', margin: '0 auto', textTransform: 'uppercase',
-                      color: 'var(--deep-black)'
+                      fontSize: isMobile ? '3.5rem' : '7rem',
+                      fontWeight: 900, lineHeight: 0.9, letterSpacing: '-0.05em',
+                      maxWidth: '1200px', margin: '0 auto', textTransform: 'uppercase',
+                      color: 'var(--deep-black)', position: 'relative'
                     }}>
-                    Best Tennis Lessons<br />in <span style={{ color: 'white', textShadow: '2px 2px 0px rgba(0,0,0,0.2)' }}>Riyadh</span>
+                    <span style={{ display: 'block' }}>Best Tennis Lessons</span>
+                    <span style={{ 
+                      color: 'white', 
+                      WebkitTextStroke: '2px var(--deep-black)',
+                      fontSize: isMobile ? '4rem' : '8rem',
+                      fontFamily: "'Playfair Display', serif",
+                      fontStyle: 'italic',
+                      display: 'block',
+                      marginTop: '10px'
+                    }}>in Riyadh</span>
                   </motion.h2>
 
                   <motion.p
@@ -503,11 +530,12 @@ const App = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.4 }}
                     style={{
-                      color: 'rgba(0,0,0,0.7)', fontSize: isMobile ? '1rem' : '1.2rem',
-                      maxWidth: '700px', margin: '25px auto 20px', lineHeight: 1.7
+                      color: 'rgba(0,0,0,0.8)', fontSize: isMobile ? '1.1rem' : '1.4rem',
+                      maxWidth: '750px', margin: '40px auto 30px', lineHeight: 1.5,
+                      fontWeight: 500
                     }}>
                     Expert coaching, world-class facilities, and a community that pushes you to be your best.
-                    Located in the heart of Al Olaya — accessible, premium, and built for champions.
+                    Built for champions, inspired by the streets.
                   </motion.p>
 
                   <motion.div
@@ -515,45 +543,50 @@ const App = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.5 }}
-                    style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '35px' }}
+                    style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap', marginBottom: '50px' }}
                   >
                     {['Private & Group Lessons', 'All Skill Levels', 'Flexible Scheduling'].map((item, i) => (
-                      <motion.span
+                      <motion.div
                         key={i}
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.6 + i * 0.1 }}
-                        whileHover={{ scale: 1.05 }}
+                        whileHover={{ scale: 1.1, rotate: i % 2 === 0 ? 2 : -2 }}
                         style={{
-                          backgroundColor: 'rgba(0,0,0,0.08)', padding: '8px 20px',
-                          borderRadius: '50px', fontSize: '0.8rem', fontWeight: 700,
-                          color: 'var(--deep-black)'
+                          backgroundColor: 'rgba(255,255,255,0.95)', padding: '12px 28px',
+                          borderRadius: '15px', fontSize: '0.9rem', fontWeight: 800,
+                          color: 'var(--deep-black)', boxShadow: '0 10px 20px rgba(0,0,0,0.05)',
+                          border: '1px solid rgba(0,0,0,0.05)', cursor: 'default'
                         }}>
                         {item}
-                      </motion.span>
+                      </motion.div>
                     ))}
                   </motion.div>
 
                   <motion.button
                     onClick={() => navigateTo('contact')}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.7 }}
-                    whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
-                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: 'spring', damping: 15, delay: 0.7 }}
+                    whileHover={{ 
+                      scale: 1.1, 
+                      boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
+                      backgroundColor: 'white',
+                      color: 'var(--deep-black)'
+                    }}
+                    whileTap={{ scale: 0.9 }}
                     style={{
                       backgroundColor: 'var(--deep-black)', color: 'white',
-                      padding: '18px 50px', borderRadius: '50px', fontSize: '1rem',
-                      fontWeight: 800, display: 'inline-flex', alignItems: 'center',
-                      gap: '12px', border: 'none', cursor: 'pointer',
-                      letterSpacing: '0.02em', textTransform: 'uppercase',
-                      transition: 'box-shadow 0.3s'
+                      padding: '24px 70px', borderRadius: '15px', fontSize: '1.2rem',
+                      fontWeight: 900, display: 'inline-flex', alignItems: 'center',
+                      gap: '15px', border: 'none', cursor: 'pointer',
+                      letterSpacing: '0.05em', textTransform: 'uppercase',
+                      transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
                     }}
                   >
-                    GET STARTED <ArrowRight size={20} />
+                    GET STARTED NOW <ArrowRight size={24} />
                   </motion.button>
+                </motion.div>
+              </div>
+            </section>
                 </motion.div>
               </div>
             </section>
