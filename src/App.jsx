@@ -613,12 +613,6 @@ const App = () => {
                 </motion.div>
               </div>
             </section>
-                </motion.div>
-              </div>
-            </section>
-                </motion.div>
-              </div>
-            </section>
 
             <Footer isMobile={isMobile} navigateTo={navigateTo} />
           </>
