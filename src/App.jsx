@@ -530,21 +530,13 @@ const App = () => {
                     }}>
                     <span style={{ display: 'block' }}>Best Tennis Lessons</span>
                     <span style={{ 
-                      color: 'white', 
-                      WebkitTextStroke: isMobile ? '1px var(--deep-black)' : '3px var(--deep-black)',
+                      color: 'var(--deep-black)', 
                       fontSize: isMobile ? '4.5rem' : '10rem',
-                      fontFamily: "'Playfair Display', serif",
-                      fontStyle: 'italic',
+                      fontFamily: "'Sedgwick Ave Display', cursive",
                       display: 'block',
-                      marginTop: '20px',
-                      position: 'relative'
+                      marginTop: '0px',
+                      transform: 'rotate(-3deg)'
                     }}>
-                      {/* Spray Paint Blob Background */}
-                      <div style={{
-                        position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                        width: '120%', height: '140%', backgroundColor: 'var(--deep-black)',
-                        opacity: 0.03, borderRadius: '50%', filter: 'blur(40px)', zIndex: -1
-                      }} />
                       in Riyadh
                     </span>
                   </motion.h2>
