@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 
 const Testimonials = ({ isMobile }) => {
   const [index, setIndex] = useState(0);
@@ -30,133 +30,78 @@ const Testimonials = ({ isMobile }) => {
   const prev = () => setIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
 
   return (
-    <section id="reviews" style={{ backgroundColor: '#FFFFFF', overflow: 'hidden' }} className="section-padding">
+    <section id="reviews" style={{ overflow: 'hidden', backgroundColor: '#fafafc' }} className="section-padding">
       <div className="container">
-        <div style={{ position: 'relative', minHeight: isMobile ? '350px' : '450px' }}>
-          
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: isMobile ? '10px' : '30px' }}>
-            {/* Static Tennis Ball Green Quotation - Inline with text */}
-            <div style={{ 
-              fontSize: isMobile ? '3rem' : '8rem', 
-              color: 'var(--tennis-green)', 
-              fontFamily: 'serif',
-              lineHeight: 0.8,
-              marginTop: isMobile ? '5px' : '15px',
-              opacity: 0.8,
-              flexShrink: 0
-            }}>“</div>
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? '40px' : '60px' }}>
+          <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: 900, letterSpacing: '-0.02em' }}>
+            WHAT <span style={{ color: 'var(--tennis-green)' }}>FIGHTERS</span> SAY
+          </h2>
+          <div style={{ width: '60px', height: '3px', backgroundColor: 'var(--tennis-green)', margin: '15px auto 0' }} />
+        </div>
 
-            <div style={{ flex: 1 }}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }} // Smoother cubic-bezier for phone
-                >
-                  {/* Quote Text */}
-                  <h2 style={{ 
-                    fontSize: isMobile ? '1.4rem' : '3.8rem', 
-                    fontWeight: 800, 
-                    lineHeight: 1.2, 
+        <div style={{ position: 'relative', minHeight: isMobile ? '280px' : '320px', maxWidth: '900px', margin: '0 auto' }}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+                <Quote size={isMobile ? 28 : 40} color="var(--tennis-green)" style={{ flexShrink: 0, marginTop: '5px', opacity: 0.5 }} />
+                <div>
+                  <p style={{
+                    fontSize: isMobile ? '1.05rem' : '1.5rem',
+                    fontWeight: 500,
+                    lineHeight: 1.5,
                     color: 'var(--deep-black)',
-                    maxWidth: '1100px',
                     fontFamily: 'var(--font-main)',
-                    letterSpacing: '-0.02em',
+                    letterSpacing: '-0.01em',
                     margin: 0
                   }}>
                     {reviews[index].quote}
-                  </h2>
+                  </p>
 
-                  {/* Author Info */}
-                  <div style={{ 
-                    marginTop: isMobile ? '40px' : '60px', 
-                    display: 'flex', 
-                    alignItems: isMobile ? 'flex-start' : 'center', 
-                    justifyContent: 'space-between',
-                    flexDirection: isMobile ? 'column' : 'row',
-                    gap: isMobile ? '30px' : '0',
-                    borderTop: '1px solid #eee',
-                    paddingTop: '30px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                      <div style={{ width: '3px', height: '40px', backgroundColor: 'var(--tennis-green)' }} />
-                      <span style={{ textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '0.2em', color: '#888', fontWeight: 700 }}>
-                        Review 0{index + 1}
-                      </span>
+                  <div style={{ marginTop: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <div style={{
+                      width: '44px', height: '44px', borderRadius: '50%',
+                      backgroundColor: 'var(--tennis-green)', display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', fontWeight: 900, fontSize: '1.1rem', color: 'var(--deep-black)'
+                    }}>
+                      A
                     </div>
-                    
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                      <div style={{ 
-                        width: isMobile ? '50px' : '70px', 
-                        height: isMobile ? '50px' : '70px', 
-                        borderRadius: '50%', 
-                        backgroundColor: 'var(--soft-gray)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: 900,
-                        fontSize: isMobile ? '1.2rem' : '1.5rem',
-                        color: 'var(--deep-black)',
-                        border: '2px solid var(--tennis-green)'
-                      }}>
-                        A
-                      </div>
-                      <div>
-                        <h4 style={{ fontSize: isMobile ? '1rem' : '1.2rem', fontWeight: 800 }}>{reviews[index].author}</h4>
-                        <p style={{ fontSize: '0.8rem', color: '#888' }}>{reviews[index].role}</p>
-                        <div style={{ display: 'flex', gap: '2px', marginTop: '5px' }}>
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={14} fill="var(--tennis-green)" color="var(--tennis-green)" />
-                          ))}
-                        </div>
-                      </div>
+                    <div>
+                      <h4 style={{ fontSize: '0.95rem', fontWeight: 800, margin: 0 }}>{reviews[index].author}</h4>
+                      <p style={{ fontSize: '0.75rem', color: '#888', margin: '2px 0 0' }}>{reviews[index].role}</p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '2px', marginLeft: 'auto' }}>
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={14} fill="var(--tennis-green)" color="var(--tennis-green)" />
+                      ))}
                     </div>
                   </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
 
-          {/* Slider Controls */}
-          <div style={{ 
-            display: 'flex', 
-            gap: '12px', 
-            marginTop: '30px',
-            justifyContent: isMobile ? 'center' : 'flex-start'
-          }}>
-            <button 
-              onClick={prev}
+          <div style={{ display: 'flex', gap: '10px', marginTop: '30px', justifyContent: 'center' }}>
+            <button onClick={prev}
               style={{
-                width: isMobile ? '50px' : '60px',
-                height: isMobile ? '50px' : '60px',
-                borderRadius: '50%',
-                border: '1px solid #eee',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'white',
-                WebkitTapHighlightColor: 'transparent'
-              }}
-            >
-              <ChevronLeft size={20} />
+                width: '44px', height: '44px', borderRadius: '50%', border: '1px solid #eee',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white',
+                cursor: 'pointer', WebkitTapHighlightColor: 'transparent'
+              }}>
+              <ChevronLeft size={18} />
             </button>
-            <button 
-              onClick={next}
+            <button onClick={next}
               style={{
-                width: isMobile ? '50px' : '60px',
-                height: isMobile ? '50px' : '60px',
-                borderRadius: '50%',
-                border: '1px solid #eee',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'white',
-                WebkitTapHighlightColor: 'transparent'
-              }}
-            >
-              <ChevronRight size={20} />
+                width: '44px', height: '44px', borderRadius: '50%', border: '1px solid #eee',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white',
+                cursor: 'pointer', WebkitTapHighlightColor: 'transparent'
+              }}>
+              <ChevronRight size={18} />
             </button>
           </div>
         </div>
