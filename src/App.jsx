@@ -53,138 +53,154 @@ const GlobalLoader = ({ progress }) => (
 );
 
 const Footer = ({ isMobile, navigateTo }) => (
-  <footer style={{ position: 'relative', zIndex: 20 }}>
-    {/* CTA Grounding Section */}
+  <footer style={{ 
+    backgroundColor: 'var(--deep-black)', 
+    color: 'white', 
+    padding: '100px 0 60px',
+    position: 'relative',
+    overflow: 'hidden',
+    zIndex: 20
+  }}>
+    {/* Large Silhouette Background Element */}
     <div style={{
-      position: 'relative',
-      height: isMobile ? '400px' : '500px',
-      overflow: 'hidden',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: 'var(--deep-black)'
-    }}>
-      <div style={{
-        position: 'absolute',
-        top: 0, left: 0, width: '100%', height: '100%',
-        backgroundImage: 'url("/tennis_street_luxury_footer_bg_1778372737233.png")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        opacity: 0.4,
-        filter: 'grayscale(100%) contrast(120%)'
-      }} />
-      <div style={{
-        position: 'absolute',
-        top: 0, left: 0, width: '100%', height: '100%',
-        background: 'linear-gradient(to bottom, var(--base-creamy) 0%, transparent 10%, transparent 90%, var(--deep-black) 100%)'
-      }} />
-      
-      <div className="container" style={{ position: 'relative', zIndex: 5, textAlign: 'center' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 style={{ 
-            fontSize: isMobile ? '3rem' : '6rem', 
-            fontWeight: 900, 
-            color: 'white', 
-            lineHeight: 0.9,
-            marginBottom: '30px',
-            textTransform: 'uppercase',
-            letterSpacing: '-0.04em'
-          }}>
-            JOIN THE <br/>
-            <span style={{ color: 'var(--tennis-green)', fontStyle: 'italic', fontFamily: "'Playfair Display', serif" }}>MOVEMENT</span>
-          </h2>
-          <motion.button
-            onClick={() => navigateTo('contact')}
-            whileHover={{ scale: 1.05, backgroundColor: 'white', color: 'black' }}
-            whileTap={{ scale: 0.95 }}
-            style={{
-              backgroundColor: 'var(--tennis-green)',
-              color: 'black',
-              padding: '20px 50px',
-              borderRadius: '100px',
-              fontSize: '1rem',
-              fontWeight: 900,
-              border: 'none',
-              cursor: 'pointer',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
-            }}
+      position: 'absolute',
+      bottom: '-10%',
+      right: isMobile ? '-20%' : '5%',
+      width: isMobile ? '300px' : '600px',
+      height: isMobile ? '400px' : '800px',
+      backgroundImage: 'url("/tennis_player_silhouette_footer_v2_1778373546936.png")',
+      backgroundSize: 'contain',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'bottom right',
+      opacity: 0.1,
+      filter: 'invert(1) brightness(2)', // Making the black silhouette white and subtle
+      pointerEvents: 'none',
+      zIndex: 0
+    }} />
+
+    <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr 1.5fr', gap: isMobile ? '60px' : '100px' }}>
+        <div>
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '30px', cursor: 'pointer' }} 
+            onClick={() => navigateTo('home')}
           >
-            Book Your Court
-          </motion.button>
-        </motion.div>
-      </div>
-    </div>
-
-    {/* Main Footer Links */}
-    <div style={{ backgroundColor: 'var(--deep-black)', color: 'white', padding: '100px 0 50px' }}>
-      <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr 1.5fr', gap: isMobile ? '60px' : '100px' }}>
-          <div>
-            <div style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '30px', cursor: 'pointer' }} onClick={() => navigateTo('home')}>
-              FIGHTERS<span style={{ color: 'var(--tennis-green)' }}>.</span>
-            </div>
-            <p style={{ color: 'rgba(255,255,255,0.5)', maxWidth: '400px', lineHeight: 1.8, fontSize: '1.1rem' }}>
-              The premier tennis academy in the heart of Riyadh. We merge urban energy with professional sport to create champions on and off the court.
-            </p>
-            <div style={{ display: 'flex', gap: '25px', marginTop: '40px' }}>
-              <motion.a whileHover={{ y: -5, color: 'var(--tennis-green)' }} href="#" style={{ color: 'white' }}><Instagram size={28} /></motion.a>
-              <motion.a whileHover={{ y: -5, color: 'var(--tennis-green)' }} href="#" style={{ color: 'white' }}><Facebook size={28} /></motion.a>
-              <motion.a whileHover={{ y: -5, color: 'var(--tennis-green)' }} href="#" style={{ color: 'white' }}><Twitter size={28} /></motion.a>
-            </div>
-          </div>
-
-          <div>
-            <h4 style={{ textTransform: 'uppercase', fontSize: '0.9rem', letterSpacing: '0.2em', marginBottom: '35px', color: 'var(--tennis-green)', fontWeight: 800 }}>Explore</h4>
-            <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: '20px' }}>
-              <li><span onClick={() => navigateTo('about')} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 600 }}>Our Story</span></li>
-              <li><span onClick={() => navigateTo('facilities')} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 600 }}>Facilities</span></li>
-              <li><span onClick={() => navigateTo('reviews-home')} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 600 }}>Reviews</span></li>
-              <li><span onClick={() => navigateTo('contact')} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 600 }}>Get in Touch</span></li>
-            </ul>
-          </div>
-
-          <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', padding: '40px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <h4 style={{ textTransform: 'uppercase', fontSize: '0.9rem', letterSpacing: '0.2em', marginBottom: '35px', color: 'var(--tennis-green)', fontWeight: 800 }}>Location</h4>
-            <div style={{ display: 'grid', gap: '25px' }}>
-              <div style={{ display: 'flex', gap: '20px' }}>
-                <MapPin size={24} style={{ color: 'var(--tennis-green)', flexShrink: 0 }} />
-                <div>
-                  <p style={{ fontWeight: 800, marginBottom: '5px' }}>Al Olaya District</p>
-                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>Al Bilad Bank Metro Station, Riyadh</p>
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: '20px' }}>
-                <Phone size={24} style={{ color: 'var(--tennis-green)', flexShrink: 0 }} />
-                <p style={{ fontWeight: 800 }}>+966 54 379 3628</p>
-              </div>
-              <div style={{ display: 'flex', gap: '20px' }}>
-                <MessageCircle size={24} style={{ color: 'var(--tennis-green)', flexShrink: 0 }} />
-                <p style={{ fontWeight: 800 }}>info@fighterstennis.com</p>
-              </div>
-            </div>
+            FIGHTERS<span style={{ color: 'var(--tennis-green)' }}>.</span>
+          </motion.div>
+          <p style={{ color: 'rgba(255,255,255,0.4)', maxWidth: '400px', lineHeight: 1.8, fontSize: '1.1rem', marginBottom: '40px' }}>
+            Unleashing the raw energy of urban tennis in Riyadh. Join the community where high-performance meets street aesthetic.
+          </p>
+          <div style={{ display: 'flex', gap: '25px' }}>
+            {[
+              { icon: <Instagram size={24} />, href: '#' },
+              { icon: <Facebook size={24} />, href: '#' },
+              { icon: <Twitter size={24} />, href: '#' }
+            ].map((social, i) => (
+              <motion.a
+                key={i}
+                whileHover={{ y: -5, color: 'var(--tennis-green)' }}
+                href={social.href}
+                style={{ 
+                  color: 'white', 
+                  backgroundColor: 'rgba(255,255,255,0.05)', 
+                  width: '50px', height: '50px', 
+                  borderRadius: '50%', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  border: '1px solid rgba(255,255,255,0.1)'
+                }}
+              >
+                {social.icon}
+              </motion.a>
+            ))}
           </div>
         </div>
 
-        <div style={{
-          marginTop: '100px', paddingTop: '40px', borderTop: '1px solid rgba(255,255,255,0.05)',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          flexDirection: isMobile ? 'column' : 'row', gap: '30px'
+        <div>
+          <h4 style={{ textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '0.25em', marginBottom: '35px', color: 'var(--tennis-green)', fontWeight: 900 }}>Directory</h4>
+          <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: '20px' }}>
+            {[
+              { label: 'The Academy', target: 'about' },
+              { label: 'Our Facilities', target: 'facilities' },
+              { label: 'Player Reviews', target: 'reviews-home' },
+              { label: 'Join the Movement', target: 'contact' }
+            ].map((link, i) => (
+              <li key={i}>
+                <motion.span 
+                  whileHover={{ x: 10, color: 'var(--tennis-green)' }}
+                  onClick={() => navigateTo(link.target)} 
+                  style={{ 
+                    color: 'rgba(255,255,255,0.6)', 
+                    textDecoration: 'none', 
+                    cursor: 'pointer', 
+                    fontSize: '1rem', 
+                    fontWeight: 600,
+                    display: 'inline-block',
+                    transition: 'color 0.2s ease'
+                  }}
+                >
+                  {link.label}
+                </motion.span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div style={{ 
+          backgroundColor: 'rgba(255,255,255,0.02)', 
+          padding: '45px', 
+          borderRadius: '35px', 
+          border: '1px solid rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(10px)'
         }}>
-          <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.85rem' }}>
-            &copy; 2026 Fighters Tennis Academy. All rights reserved.
-          </p>
-          <div style={{ display: 'flex', gap: '30px', color: 'rgba(255,255,255,0.3)', fontSize: '0.85rem', fontWeight: 600 }}>
-            <span>Privacy Policy</span>
-            <span>Terms of Service</span>
-            <span style={{ color: 'white' }}>Website by Epoch Studios</span>
+          <h4 style={{ textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '0.25em', marginBottom: '35px', color: 'var(--tennis-green)', fontWeight: 900 }}>Headquarters</h4>
+          <div style={{ display: 'grid', gap: '30px' }}>
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(188, 224, 36, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <MapPin size={20} style={{ color: 'var(--tennis-green)' }} />
+              </div>
+              <div>
+                <p style={{ fontWeight: 800, marginBottom: '5px', fontSize: '1.1rem' }}>Al Olaya Street</p>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', lineHeight: 1.5 }}>Al Bilad Bank Metro Station,<br/> Riyadh, Saudi Arabia</p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(188, 224, 36, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Phone size={20} style={{ color: 'var(--tennis-green)' }} />
+              </div>
+              <p style={{ fontWeight: 800, fontSize: '1.1rem' }}>+966 54 379 3628</p>
+            </div>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(188, 224, 36, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <MessageCircle size={20} style={{ color: 'var(--tennis-green)' }} />
+              </div>
+              <p style={{ fontWeight: 800, fontSize: '1.1rem' }}>info@fighterstennis.com</p>
+            </div>
           </div>
+        </div>
+      </div>
+
+      <div style={{
+        marginTop: '100px', 
+        paddingTop: '40px', 
+        borderTop: '1px solid rgba(255,255,255,0.05)',
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        flexDirection: isMobile ? 'column' : 'row', 
+        gap: '30px'
+      }}>
+        <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.85rem' }}>
+          &copy; 2026 Fighters Tennis Academy. Built with passion by <span style={{ color: 'white', fontWeight: 800 }}>Epoch Studios</span>.
+        </p>
+        <div style={{ display: 'flex', gap: '40px', color: 'rgba(255,255,255,0.2)', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          <motion.span whileHover={{ color: 'white' }} style={{ cursor: 'pointer' }}>Privacy</motion.span>
+          <motion.span whileHover={{ color: 'white' }} style={{ cursor: 'pointer' }}>Terms</motion.span>
+          <motion.span whileHover={{ color: 'white' }} style={{ cursor: 'pointer' }}>Cookie Policy</motion.span>
         </div>
       </div>
     </div>
