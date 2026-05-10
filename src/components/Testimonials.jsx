@@ -168,7 +168,6 @@ const Testimonials = ({ isMobile }) => {
         }} />
 
         <Row items={reviews} />
-        <Row items={reviews} reverse />
       </div>
 
       <div className="container" style={{ marginTop: '60px', textAlign: 'center' }}>
