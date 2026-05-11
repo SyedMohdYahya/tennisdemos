@@ -12,7 +12,7 @@ const Hero = ({ onProgress, onLoadComplete }) => {
   }, []);
 
   return (
-    <section ref={containerRef} style={{ height: isMobile ? '800vh' : '500vh', position: 'relative' }}>
+    <section ref={containerRef} style={{ height: isMobile ? '500vh' : '500vh', position: 'relative' }}>
       <div style={{
         position: 'sticky',
         top: 0,
@@ -32,7 +32,7 @@ const Hero = ({ onProgress, onLoadComplete }) => {
           left: '50%',
           transform: 'translate(-50%, -50%) scale(2.8) rotate(-8deg)',
           fontFamily: "'Sedgwick Ave Display', cursive",
-          fontSize: '18vw',
+          fontSize: isMobile ? '25vw' : '18vw',
           color: 'var(--deep-black)',
           lineHeight: 0.7,
           textAlign: 'center',
@@ -113,7 +113,7 @@ const Hero = ({ onProgress, onLoadComplete }) => {
         }}>
           <ImageSequence 
             containerRef={containerRef} 
-            endProgress={isMobile ? 0.375 : 0.6}
+            endProgress={isMobile ? 0.9 : 0.6}
             onProgress={onProgress}
             onLoadComplete={onLoadComplete}
             sequences={[

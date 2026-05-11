@@ -221,9 +221,10 @@ const App = () => {
 
   React.useEffect(() => {
     return scrollY.on("change", (latest) => {
-      setShowHeader(latest > window.innerHeight * 4.2);
+      const threshold = isMobile ? window.innerHeight * 3.5 : window.innerHeight * 4.2;
+      setShowHeader(latest > threshold);
     });
-  }, [scrollY]);
+  }, [scrollY, isMobile]);
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -232,19 +233,16 @@ const App = () => {
   }, []);
 
   const navigateTo = (target) => {
+    setPage(target);
+    setIsMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    
     if (target === 'reviews-home') {
       setPage('home');
       setTimeout(() => {
         document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else if (target === 'home') {
-      setPage('home');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      setPage(target);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 150);
     }
-    setIsMenuOpen(false);
   };
 
   const scrollToSection = (id) => {
@@ -252,7 +250,7 @@ const App = () => {
       setPage('home');
       setTimeout(() => {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      }, 150);
     } else {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }
@@ -622,13 +620,9 @@ const App = () => {
                     Elite Tennis Experience
                   </motion.div>
 
-                  <motion.h2
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.2 }}
+                  <h2
                     style={{
-                      fontSize: isMobile ? '3.5rem' : '8.5rem',
+                      fontSize: isMobile ? '3rem' : '8.5rem',
                       fontWeight: 900, lineHeight: 0.85, letterSpacing: '-0.06em',
                       maxWidth: '1300px', margin: '0 auto', textTransform: 'uppercase',
                       color: 'var(--deep-black)', position: 'relative'
@@ -636,7 +630,7 @@ const App = () => {
                     <span style={{ display: 'block' }}>Best Tennis Lessons</span>
                     <span style={{ 
                       color: 'white', 
-                      fontSize: isMobile ? '4.5rem' : '10rem',
+                      fontSize: isMobile ? '4rem' : '10rem',
                       fontFamily: "'Sedgwick Ave Display', cursive",
                       display: 'block',
                       marginTop: '0px',
@@ -645,35 +639,25 @@ const App = () => {
                     }}>
                       in Riyadh
                     </span>
-                  </motion.h2>
+                  </h2>
 
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.5 }}
+                  <p
                     style={{
                       color: 'rgba(0,0,0,0.85)', fontSize: isMobile ? '1.1rem' : '1.6rem',
                       maxWidth: '800px', margin: '50px auto 40px', lineHeight: 1.4,
                       fontWeight: 600, letterSpacing: '-0.01em'
                     }}>
                     Ready to crush it? Our world-class facilities and expert coaches are waiting for you in the heart of Riyadh.
-                  </motion.p>
+                  </p>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                    style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap', marginBottom: '60px' }}
-                  >
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap', marginBottom: '60px' }}>
                     {['Private & Group', 'All Skill Levels', 'Pro Coaching'].map((item, i) => (
                       <motion.div
                         key={i}
                         whileHover={{ scale: 1.1, rotate: i % 2 === 0 ? 3 : -3, backgroundColor: 'var(--deep-black)', color: 'white' }}
                         style={{
-                          backgroundColor: 'rgba(255,255,255,0.8)', padding: '15px 35px',
-                          borderRadius: '0px', fontSize: '1rem', fontWeight: 900,
+                          backgroundColor: 'rgba(255,255,255,0.8)', padding: isMobile ? '12px 20px' : '15px 35px',
+                          borderRadius: '0px', fontSize: isMobile ? '0.8rem' : '1rem', fontWeight: 900,
                           color: 'var(--deep-black)', boxShadow: '10px 10px 0px rgba(0,0,0,0.05)',
                           border: '2px solid var(--deep-black)', cursor: 'default',
                           textTransform: 'uppercase', transition: 'all 0.2s'
@@ -681,14 +665,10 @@ const App = () => {
                         {item}
                       </motion.div>
                     ))}
-                  </motion.div>
+                  </div>
 
                   <motion.button
                     onClick={() => navigateTo('contact')}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ type: 'spring', damping: 12, delay: 0.8 }}
                     whileHover={{ 
                       scale: 1.1, 
                       backgroundColor: 'white',
@@ -698,7 +678,7 @@ const App = () => {
                     whileTap={{ scale: 0.95 }}
                     style={{
                       backgroundColor: 'var(--deep-black)', color: 'white',
-                      padding: '28px 80px', borderRadius: '0px', fontSize: '1.4rem',
+                      padding: isMobile ? '20px 40px' : '28px 80px', borderRadius: '0px', fontSize: isMobile ? '1.1rem' : '1.4rem',
                       fontWeight: 900, display: 'inline-flex', alignItems: 'center',
                       gap: '20px', border: 'none', cursor: 'pointer',
                       letterSpacing: '0.05em', textTransform: 'uppercase',
@@ -709,33 +689,33 @@ const App = () => {
                     BOOK YOUR SLOT <ArrowRight size={28} />
                   </motion.button>
                 </motion.div>
-              </div>
-            </section>
+              </section>
 
-            <Footer isMobile={isMobile} navigateTo={navigateTo} />
-          </>
-        )}
+              <Footer isMobile={isMobile} navigateTo={navigateTo} />
+            </>
+          )}
 
-        {page === 'about' && (
-          <>
-            <AboutPage isMobile={isMobile} navigateTo={navigateTo} />
-            <Footer isMobile={isMobile} navigateTo={navigateTo} />
-          </>
-        )}
+          {page === 'about' && (
+            <>
+              <AboutPage isMobile={isMobile} navigateTo={navigateTo} />
+              <Footer isMobile={isMobile} navigateTo={navigateTo} />
+            </>
+          )}
 
-        {page === 'facilities' && (
-          <>
-            <FacilitiesPage isMobile={isMobile} navigateTo={navigateTo} />
-            <Footer isMobile={isMobile} navigateTo={navigateTo} />
-          </>
-        )}
+          {page === 'facilities' && (
+            <>
+              <FacilitiesPage isMobile={isMobile} navigateTo={navigateTo} />
+              <Footer isMobile={isMobile} navigateTo={navigateTo} />
+            </>
+          )}
 
-        {page === 'contact' && (
-          <>
-            <ContactPage isMobile={isMobile} />
-            <Footer isMobile={isMobile} navigateTo={navigateTo} />
-          </>
-        )}
+          {page === 'contact' && (
+            <>
+              <ContactPage isMobile={isMobile} />
+              <Footer isMobile={isMobile} navigateTo={navigateTo} />
+            </>
+          )}
+        </main>
       </motion.div>
     </>
   );
