@@ -4,6 +4,8 @@ const MAX_DECODE_JOBS = 5;
 const MAX_CANVAS_DPR = 1.5;
 const FRAME_EASE = 0.28;
 const FRAME_SETTLE_DELTA = 0.04;
+const READY_FRAME_COUNT = 18;
+const KEYFRAME_STRIDE = 5;
 
 const decodedFrameCache = new Map();
 
@@ -21,6 +23,32 @@ const buildFrameUrls = (sequences) => {
   });
 
   return urls;
+};
+
+const buildLoadOrder = (totalFrames) => {
+  const order = [];
+  const seen = new Set();
+
+  const push = (index) => {
+    if (index >= 0 && index < totalFrames && !seen.has(index)) {
+      seen.add(index);
+      order.push(index);
+    }
+  };
+
+  push(0);
+
+  for (let index = KEYFRAME_STRIDE; index < totalFrames; index += KEYFRAME_STRIDE) {
+    push(index);
+  }
+
+  push(totalFrames - 1);
+
+  for (let index = 1; index < totalFrames; index += 1) {
+    push(index);
+  }
+
+  return order;
 };
 
 const decodeBlobWithImage = (blob) =>
@@ -100,6 +128,7 @@ const ImageSequence = ({ sequences, containerRef, endProgress = 0.9, onProgress,
   const targetFrameRef = useRef(0);
   const metricsRef = useRef({ start: 0, animationEnd: 1 });
   const rafRef = useRef(0);
+  const loadCompletePublishedRef = useRef(false);
   const onProgressRef = useRef(onProgress);
   const onLoadCompleteRef = useRef(onLoadComplete);
 
@@ -265,25 +294,35 @@ const ImageSequence = ({ sequences, containerRef, endProgress = 0.9, onProgress,
 
   useEffect(() => {
     let disposed = false;
-    let nextIndex = 1;
+    const loadOrder = buildLoadOrder(totalFrames);
+    let nextOrderIndex = 1;
+    const readyFrameCount = Math.min(totalFrames, READY_FRAME_COUNT);
 
     framesRef.current = new Array(totalFrames);
     loadedCountRef.current = 0;
     lastProgressRef.current = -1;
     lastDrawnFrameRef.current = -1;
+    loadCompletePublishedRef.current = false;
     currentFrameRef.current = 0;
     targetFrameRef.current = 0;
     onProgressRef.current?.(0);
 
     const publishProgress = () => {
-      const progress = totalFrames === 0 ? 100 : Math.round((loadedCountRef.current / totalFrames) * 100);
+      const isReady =
+        totalFrames === 0 ||
+        loadedCountRef.current >= readyFrameCount ||
+        loadedCountRef.current >= totalFrames;
+      const progress = isReady
+        ? 100
+        : Math.round((loadedCountRef.current / Math.max(1, readyFrameCount)) * 100);
 
       if (progress !== lastProgressRef.current) {
         lastProgressRef.current = progress;
         onProgressRef.current?.(progress);
       }
 
-      if (loadedCountRef.current >= totalFrames) {
+      if (isReady && !loadCompletePublishedRef.current) {
+        loadCompletePublishedRef.current = true;
         drawFrame(currentFrameRef.current, true);
         onLoadCompleteRef.current?.();
       }
@@ -313,12 +352,12 @@ const ImageSequence = ({ sequences, containerRef, endProgress = 0.9, onProgress,
         return;
       }
 
-      await loadAt(allUrls[0], 0);
+      await loadAt(allUrls[loadOrder[0]], loadOrder[0]);
 
       const workers = Array.from({ length: Math.min(MAX_DECODE_JOBS, Math.max(1, totalFrames - 1)) }, async () => {
-        while (!disposed && nextIndex < totalFrames) {
-          const index = nextIndex;
-          nextIndex += 1;
+        while (!disposed && nextOrderIndex < loadOrder.length) {
+          const index = loadOrder[nextOrderIndex];
+          nextOrderIndex += 1;
           await loadAt(allUrls[index], index);
         }
       });
