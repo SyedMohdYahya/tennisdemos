@@ -1,40 +1,19 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ImageSequence from './ImageSequence';
 
 const Hero = ({ onProgress, onLoadComplete }) => {
-  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 767px)').matches);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const containerRef = useRef(null);
-  const sequences = useMemo(
-    () => [
-      {
-        baseUrl: '/images/sequence/frame_',
-        start: 1,
-        end: 78
-      }
-    ],
-    []
-  );
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
-    const handleChange = (event) => setIsMobile(event.matches);
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-
-    mediaQuery.addListener(handleChange);
-    return () => mediaQuery.removeListener(handleChange);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
-    <section
-      ref={containerRef}
-      className="hero-scroll-stage"
-      style={{ '--hero-scroll-height': isMobile ? '580vh' : '450vh' }}
-    >
-      <div className="hero-sticky-panel" style={{
+    <section ref={containerRef} style={{ height: isMobile ? '500vh' : '500vh', position: 'relative' }}>
+      <div style={{
         position: 'sticky',
         top: 0,
         height: '100vh',
@@ -44,10 +23,10 @@ const Hero = ({ onProgress, onLoadComplete }) => {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'var(--tennis-green)',
-        padding: isMobile ? '64px 16px' : '0'
+        padding: isMobile ? '80px 20px' : '0'
       }}>
         {/* Messy Graffiti Background Text Layer */}
-        <div className="hero-graffiti-layer" style={{
+        <div style={{
           position: 'absolute',
           top: '50%',
           left: '50%',
@@ -68,7 +47,7 @@ const Hero = ({ onProgress, onLoadComplete }) => {
         </div>
 
         {/* Random Black Street Art Elements */}
-        <div className="hero-graffiti-layer" style={{
+        <div style={{
           position: 'absolute',
           top: 0,
           left: 0,
@@ -95,7 +74,7 @@ const Hero = ({ onProgress, onLoadComplete }) => {
         </div>
 
         {/* Dense Main Graffiti Text */}
-        <div className="hero-graffiti-layer" style={{
+        <div style={{
           position: 'absolute',
           top: 0,
           left: 0,
@@ -125,21 +104,30 @@ const Hero = ({ onProgress, onLoadComplete }) => {
         {/* Custom Canvas Image Sequence (Foreground) */}
         <div style={{
           height: isMobile ? '60%' : '90%',
-          width: isMobile ? '92%' : '70%',
-          maxWidth: isMobile ? '560px' : '1180px',
+          width: isMobile ? '90%' : '70%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          zIndex: 10,
-          transform: 'translateZ(0)'
+          zIndex: 10
         }}>
           <ImageSequence 
             containerRef={containerRef} 
-            endProgress={isMobile ? 0.88 : 0.92}
+            endProgress={isMobile ? 0.9 : 0.6}
             onProgress={onProgress}
             onLoadComplete={onLoadComplete}
-            sequences={sequences}
+            sequences={[
+              {
+                baseUrl: '/frames_a/frame_',
+                start: 1,
+                end: 59
+              },
+              {
+                baseUrl: 'https://syedyahyatirmizi.sirv.com/processed_frames/frame_',
+                start: 2,
+                end: 31
+              }
+            ]}
           />
         </div>
       </div>
@@ -147,4 +135,4 @@ const Hero = ({ onProgress, onLoadComplete }) => {
   );
 };
 
-export default React.memo(Hero);
+export default Hero;

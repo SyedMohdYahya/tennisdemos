@@ -40,7 +40,7 @@ const GlobalLoader = ({ progress }) => (
           <path d="M0 50 Q25 50 50 0" fill="none" stroke="white" strokeWidth="2" />
           <path d="M50 100 Q75 50 100 50" fill="none" stroke="white" strokeWidth="2" />
         </svg>
-        <div style={{ color: 'var(--deep-black)', fontSize: '2rem', fontWeight: 900, zIndex: 10, fontFamily: 'var(--font-main)' }}>
+        <div style={{ color: 'var(--deep-black)', fontSize: '2rem', fontWeight: 900, zIndex: 10, fontFamily: 'Outfit, sans-serif' }}>
           {progress}%
         </div>
       </motion.div>
@@ -214,30 +214,22 @@ const App = () => {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
-  const [isMobile, setIsMobile] = React.useState(() => window.matchMedia('(max-width: 767px)').matches);
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [showHeader, setShowHeader] = React.useState(false);
   const { scrollY } = useScroll();
 
   React.useEffect(() => {
     return scrollY.on("change", (latest) => {
-      const threshold = window.innerHeight * (isMobile ? 4.1 : 3.2);
-      const nextShowHeader = latest > threshold;
-      setShowHeader((current) => (current === nextShowHeader ? current : nextShowHeader));
+      const threshold = isMobile ? window.innerHeight * 3.5 : window.innerHeight * 4.2;
+      setShowHeader(latest > threshold);
     });
-  }, [isMobile, scrollY]);
+  }, [scrollY, isMobile]);
 
   React.useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
-    const handleChange = (event) => setIsMobile(event.matches);
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-
-    mediaQuery.addListener(handleChange);
-    return () => mediaQuery.removeListener(handleChange);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const navigateTo = (target) => {
@@ -266,14 +258,6 @@ const App = () => {
   };
 
   const showHeaderAlways = page !== 'home';
-  const isHeaderVisible = showHeaderAlways || showHeader;
-  const handleHeroProgress = React.useCallback((progress) => {
-    setLoadProgress((current) => (current === progress ? current : progress));
-  }, []);
-  const handleHeroLoadComplete = React.useCallback(() => {
-    setLoadProgress(100);
-    setIsLoaded(true);
-  }, []);
 
   return (
     <>
@@ -287,25 +271,21 @@ const App = () => {
         animate={{ opacity: isLoaded ? 1 : 0 }}
         transition={{ duration: 1 }}
       >
-        <motion.header
-          initial={false}
-          animate={isHeaderVisible ? { y: 0, opacity: 1 } : { y: -96, opacity: 0 }}
-          transition={{ duration: isHeaderVisible ? 0.42 : 0.24, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            position: 'fixed', top: 0, left: 0, width: '100%',
-            height: isMobile ? '70px' : '90px', zIndex: 1100,
-            background: isHeaderVisible
-              ? showHeaderAlways ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.46)'
-              : 'rgba(255, 255, 255, 0)',
-            backdropFilter: isHeaderVisible ? 'blur(12px)' : 'none',
-            WebkitBackdropFilter: isHeaderVisible ? 'blur(12px)' : 'none',
-            borderBottom: isHeaderVisible ? '1px solid rgba(223, 255, 0, 0.2)' : '1px solid rgba(223, 255, 0, 0)',
-            display: 'flex', alignItems: 'center',
-            padding: isMobile ? '0 20px' : '0 60px', justifyContent: 'space-between',
-            pointerEvents: isHeaderVisible ? 'auto' : 'none',
-            willChange: 'transform, opacity'
-          }}
-        >
+        {(showHeaderAlways || showHeader) && (
+          <motion.header
+            initial={showHeaderAlways ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            style={{
+              position: 'fixed', top: 0, left: 0, width: '100%',
+              height: isMobile ? '70px' : '90px', zIndex: 1100,
+              background: showHeaderAlways ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.4)',
+              backdropFilter: 'blur(20px)',
+              borderBottom: '1px solid rgba(223, 255, 0, 0.2)',
+              display: 'flex', alignItems: 'center',
+              padding: isMobile ? '0 20px' : '0 60px', justifyContent: 'space-between'
+            }}
+          >
             <div style={{ fontSize: '1.5rem', fontWeight: 900, cursor: 'pointer' }} onClick={() => navigateTo('home')}>
               FIGHTERS<span style={{ color: 'var(--tennis-green)' }}>.</span>
             </div>
@@ -328,7 +308,8 @@ const App = () => {
                 </button>
               )}
             </div>
-        </motion.header>
+          </motion.header>
+        )}
 
         <GraffitiLayer />
 
@@ -387,7 +368,7 @@ const App = () => {
 
         {page === 'home' && (
           <>
-            <Hero onProgress={handleHeroProgress} onLoadComplete={handleHeroLoadComplete} />
+            <Hero onProgress={(p) => setLoadProgress(p)} onLoadComplete={() => setIsLoaded(true)} />
 
             {/* Testimonials - Reviews first */}
             <div style={{ position: 'relative', zIndex: 10, backgroundColor: 'transparent', color: 'var(--deep-black)' }}>
@@ -455,7 +436,7 @@ const App = () => {
                         fontSize: isMobile ? '2.5rem' : '4rem',
                         fontWeight: 900, lineHeight: 0.95, marginBottom: '30px',
                         textTransform: 'uppercase', letterSpacing: '-0.04em',
-                        fontFamily: "var(--font-accent)"
+                        fontFamily: "'Playfair Display', serif"
                       }}>
                       Fighters Tennis <span style={{ color: 'var(--tennis-green)', fontStyle: 'italic' }}>Academy</span>
                     </motion.h2>
@@ -735,7 +716,7 @@ const App = () => {
               <Footer isMobile={isMobile} navigateTo={navigateTo} />
             </>
           )}
-      </motion.div>
+        </motion.div>
     </>
   );
 };

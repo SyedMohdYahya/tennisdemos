@@ -203,7 +203,7 @@ const AboutPage = ({ isMobile, navigateTo }) => {
                 fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.04em',
                 lineHeight: 1
               }}>
-              WHY <span style={{ color: 'var(--tennis-green)', fontStyle: 'italic', fontFamily: "'Outfit', sans-serif" }}>CHOOSE US</span>
+              WHY <span style={{ color: 'var(--tennis-green)', fontStyle: 'italic', fontFamily: "'Playfair Display', serif" }}>CHOOSE US</span>
             </motion.h2>
             <motion.div
               initial={{ width: 0 }}
